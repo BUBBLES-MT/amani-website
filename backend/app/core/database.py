@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import MetaData, text
 import logging
+import uuid
 from typing import AsyncGenerator
 
 from app.core.config import settings
@@ -71,15 +72,19 @@ engine_kwargs = {
     "pool_recycle": 3600,
 }
 
-# ✅ SSL + statement_cache_size kwa Supabase (production)
+# ✅ Supabase (production) — PgBouncer fixes
 if settings.ENVIRONMENT.lower() == "production":
     engine_kwargs["connect_args"] = {
         "ssl": "require",
         "timeout": 30,
         "command_timeout": 60,
         "server_settings": {"application_name": "aman_church_api"},
-        # ✅ MUHIMU: PgBouncer (Supabase) haitumii prepared statements
+        # ✅ 1. Zima cache ya asyncpg
         "statement_cache_size": 0,
+        # ✅ 2. Zima cache ya SQLAlchemy dialect
+        "prepared_statement_cache_size": 0,
+        # ✅ 3. Toa jina la kipekee kwa kila prepared statement
+        "prepared_statement_name_func": lambda: f"__asyncpg_{uuid.uuid4()}__",
     }
 else:
     # Local PostgreSQL
