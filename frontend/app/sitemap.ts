@@ -3,7 +3,9 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://amanichurch.com";
+  // ✅ Kwa sasa: Vercel URL
+  // 🎯 Baadaye (baada ya domain): badilisha kuwa "https://amanichurch.com"
+  const baseUrl = "https://amani-website-six.vercel.app";
   const now = new Date();
 
   return [
