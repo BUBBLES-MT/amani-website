@@ -22,7 +22,7 @@ Base = declarative_base(metadata=metadata)
 
 
 # ============================================
-# IMPORT ALL MODELS (ili Base iwe na metadata)
+# IMPORT ALL MODELS
 # ============================================
 from app.models.user import User
 from app.models.offering import Offering
@@ -38,11 +38,11 @@ from app.models.page_visitor import PageVisitor
 
 
 # ============================================
-# ✅ DATABASE URL — inamua ipi itumike
+# ✅ DATABASE URL
 # ============================================
-DATABASE_URL = settings.get_database_url()   # ✅
+DATABASE_URL = settings.get_database_url()
 
-# ✅ Onyesha host pekee (bila password)
+
 def _safe_host(url: str) -> str:
     try:
         if "@" in url:
@@ -61,7 +61,7 @@ logger.info("=" * 60)
 
 
 # ============================================
-# ✅ ASYNC ENGINE — inafanya kazi local na production
+# ✅ ASYNC ENGINE
 # ============================================
 engine_kwargs = {
     "echo": settings.DATABASE_ECHO,
@@ -71,17 +71,18 @@ engine_kwargs = {
     "pool_recycle": 3600,
 }
 
-# ✅ SSL — inahitajika kwa Supabase, sio kwa localhost
+# ✅ SSL + statement_cache_size kwa Supabase (production)
 if settings.ENVIRONMENT.lower() == "production":
-    # Supabase inahitaji SSL
     engine_kwargs["connect_args"] = {
         "ssl": "require",
         "timeout": 30,
         "command_timeout": 60,
         "server_settings": {"application_name": "aman_church_api"},
+        # ✅ MUHIMU: PgBouncer (Supabase) haitumii prepared statements
+        "statement_cache_size": 0,
     }
 else:
-    # Local PostgreSQL haina SSL
+    # Local PostgreSQL
     engine_kwargs["connect_args"] = {
         "timeout": 30,
         "command_timeout": 60,
@@ -105,7 +106,7 @@ AsyncSessionLocal = async_sessionmaker(
 
 
 # ============================================
-# ✅ GET DB — FastAPI dependency
+# ✅ GET DB
 # ============================================
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSessionLocal() as session:
@@ -123,7 +124,6 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 # ✅ TEST CONNECTION
 # ============================================
 async def test_connection(retries: int = 3, delay: int = 2) -> bool:
-    """Test database connection with retries."""
     import asyncio
 
     for attempt in range(1, retries + 1):
@@ -140,7 +140,7 @@ async def test_connection(retries: int = 3, delay: int = 2) -> bool:
 
 
 # ============================================
-# ✅ INIT DB — unda tables
+# ✅ INIT DB
 # ============================================
 async def init_db():
     try:
@@ -150,13 +150,11 @@ async def init_db():
             logger.error("❌ Could not connect to database after multiple attempts")
             raise Exception("Database connection failed")
 
-        # Unda tables zote
         async with async_engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
 
         logger.info("✅ Database tables created/verified successfully!")
 
-        # Orodhesha tables zilizopo
         async with async_engine.connect() as conn:
             result = await conn.execute(
                 text(
