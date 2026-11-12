@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import MetaData, text
+from sqlalchemy.pool import NullPool
 import logging
 import uuid
 from typing import AsyncGenerator
@@ -62,36 +63,37 @@ logger.info("=" * 60)
 
 
 # ============================================
-# ✅ ASYNC ENGINE
+# ✅ ASYNC ENGINE — Supabase PgBouncer Fixes
 # ============================================
-engine_kwargs = {
-    "echo": settings.DATABASE_ECHO,
-    "pool_size": settings.DATABASE_POOL_SIZE,
-    "max_overflow": settings.DATABASE_MAX_OVERFLOW,
-    "pool_pre_ping": True,
-    "pool_recycle": 3600,
-}
-
-# ✅ Supabase (production) — PgBouncer fixes
 if settings.ENVIRONMENT.lower() == "production":
-    engine_kwargs["connect_args"] = {
-        "ssl": "require",
-        "timeout": 30,
-        "command_timeout": 60,
-        "server_settings": {"application_name": "aman_church_api"},
-        # ✅ 1. Zima cache ya asyncpg
-        "statement_cache_size": 0,
-        # ✅ 2. Zima cache ya SQLAlchemy dialect
-        "prepared_statement_cache_size": 0,
-        # ✅ 3. Toa jina la kipekee kwa kila prepared statement
-        "prepared_statement_name_func": lambda: f"__asyncpg_{uuid.uuid4()}__",
+    # ✅ Production (Supabase PgBouncer)
+    engine_kwargs = {
+        "echo": settings.DATABASE_ECHO,
+        "poolclass": NullPool,
+        "connect_args": {
+            "ssl": "require",
+            "timeout": 30,
+            "command_timeout": 60,
+            "server_settings": {"application_name": "aman_church_api"},
+            "statement_cache_size": 0,
+            "prepared_statement_cache_size": 0,
+            "prepared_statement_name_func": lambda: f"__asyncpg_{uuid.uuid4()}__",
+        },
+        "execution_options": {"compiled_cache": None},
     }
 else:
-    # Local PostgreSQL
-    engine_kwargs["connect_args"] = {
-        "timeout": 30,
-        "command_timeout": 60,
-        "server_settings": {"application_name": "aman_church_api"},
+    # ✅ Local (PostgreSQL)
+    engine_kwargs = {
+        "echo": settings.DATABASE_ECHO,
+        "pool_size": settings.DATABASE_POOL_SIZE,
+        "max_overflow": settings.DATABASE_MAX_OVERFLOW,
+        "pool_pre_ping": True,
+        "pool_recycle": 3600,
+        "connect_args": {
+            "timeout": 30,
+            "command_timeout": 60,
+            "server_settings": {"application_name": "aman_church_api"},
+        },
     }
 
 
