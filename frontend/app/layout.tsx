@@ -51,8 +51,8 @@ export const metadata: Metadata = {
   creator: "KKKT Usharika Wa Amani, Singida",
   publisher: "KKKT Usharika Wa Amani, Singida",
 
-  // ✅ Canonical URL — badilisha na domain yako halisi
-  metadataBase: new URL("https://amanichurch.com"),
+  // ✅ Canonical URL — kwa sasa Vercel, baadaye amanichurch.com
+  metadataBase: new URL("https://amani-website-six.vercel.app"),
   alternates: {
     canonical: "/",
   },
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "sw_TZ",
-    url: "https://amanichurch.com",
+    url: "https://amani-website-six.vercel.app",
     siteName: "KKKT Church - Usharika Wa Amani, Singida",
     title: "KKKT Church - Usharika Wa Amani, Singida",
     description:
@@ -98,9 +98,9 @@ export const metadata: Metadata = {
     },
   },
 
-  // ✅ Verification (baadaye utaongeza code kutoka Google Search Console)
+  // ✅ Verification — Google Search Console
   verification: {
-    // google: "your-google-verification-code",
+    google: "lXsW3CJ3JBmdGJKn2X8tdoivjbTZuQce5RmyNWy-Si0",
   },
 
   // ✅ Aina ya app
@@ -135,9 +135,9 @@ const jsonLd = {
   "@type": "Church",
   name: "KKKT Church - Usharika Wa Amani, Singida",
   alternateName: "Amani Luthelani Church",
-  url: "https://amanichurch.com",
-  logo: "https://amanichurch.com/logo.png",
-  image: "https://amanichurch.com/og-image.jpg",
+  url: "https://amani-website-six.vercel.app",
+  logo: "https://amani-website-six.vercel.app/logo.png",
+  image: "https://amani-website-six.vercel.app/og-image.jpg",
   description:
     "Kanisa la KKKT - Usharika Wa Amani, lililopo Singida-Ginery, Tanzania.",
   address: {
