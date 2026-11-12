@@ -21,6 +21,23 @@ router = APIRouter()
 
 
 # ============================================
+# ✅ ROLES ZINAZORUHUSIWA KUONA WATUMIAJI
+# ============================================
+USER_VIEWER_ROLES = [
+    "super_admin",
+    "mchungaji_kiongozi",
+    "mchungaji_msaidizi",
+    "mwinjilist",
+    "mwenyekiti",
+    "mwenyekiti_msaidizi",
+    "katibu_mkuu",
+    "mzee_kanisa",
+    "mhasibu",
+    "it",
+]
+
+
+# ============================================
 # 🎯 HELPER: Case-insensitive role matcher
 # ============================================
 def _match_role(value: str) -> UserRole:
@@ -42,16 +59,12 @@ def _match_role(value: str) -> UserRole:
     raise HTTPException(422, f"role si sahihi. Tumia: {valid}")
 
 
-# ============================================
-# 🎯 HELPER: Pata role value kama string
-# ============================================
 def _role_str(user: User) -> str:
     return user.role.value if hasattr(user.role, "value") else str(user.role)
 
 
 # ============================================
 # 🌍 PUBLIC — GET /users/public/leaders
-# ✅ Viongozi wa kanisa pekee (bila super_admin, bila muumini)
 # ============================================
 @router.get("/public/leaders", response_model=List[UserResponse])
 async def get_public_leaders(
@@ -82,20 +95,29 @@ async def get_public_leaders(
 
 
 # ============================================
-# 📋 GET /users/ — Orodha (super_admin only)
-# ✅ Super Admin HAONEKANI kwenye orodha hii
+# 📋 GET /users/ — Orodha
+# ✅ Viongozi wanaweza kuona (bila super_admin)
 # ============================================
 @router.get("/", response_model=List[UserResponse])
 async def get_users(
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_super_admin),
+    current_user: User = Depends(get_current_active_user),  # ✅ Badilisha
     skip: int = 0,
     limit: int = 100,
 ):
     """
-    Get all users (Super Admin only).
-    ✅ Super Admin HAONEKANI kwenye orodha — hata yeye mwenyewe.
+    Get all users.
+    ✅ Viongozi wanaweza kuona — super_admin, mchungaji_kiongozi, n.k.
+    ✅ Super Admin HAONEKANI kwenye orodha.
     """
+    # ✅ Kagua ruhusa
+    role = _role_str(current_user)
+    if role not in USER_VIEWER_ROLES:
+        raise HTTPException(
+            403,
+            f"Huna ruhusa ya kuona watumiaji. Roles: {', '.join(USER_VIEWER_ROLES)}",
+        )
+
     result = await db.execute(
         select(User)
         .where(User.role != UserRole.SUPER_ADMIN)  # ✅ Ficha super_admin
@@ -109,7 +131,6 @@ async def get_users(
 
 # ============================================
 # 🔍 GET /users/{id} — Moja
-# ✅ Super Admin anaweza kuona profile yake mwenyewe tu
 # ============================================
 @router.get("/{user_id}", response_model=UserResponse)
 async def get_user(
@@ -117,34 +138,34 @@ async def get_user(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
 ):
+    # ✅ Kagua ruhusa
+    role = _role_str(current_user)
+    if role not in USER_VIEWER_ROLES:
+        raise HTTPException(403, "Huna ruhusa ya kuona mtumiaji huyu")
+
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
     if not user:
         raise HTTPException(404, "Mtumiaji haipatikani")
 
-    # ✅ Kama ni super_admin na si wewe mwenyewe — 404
     user_role = _role_str(user)
     current_role = _role_str(current_user)
 
+    # ✅ Super admin haonekani kwa wengine
     if user_role == "super_admin" and user.id != current_user.id:
         raise HTTPException(404, "Mtumiaji haipatikani")
 
-    # ✅ Ruhusu super_admin kuona profile yake mwenyewe
-    if current_role == "super_admin" and user.id == current_user.id:
-        return UserResponse.from_orm(user)
-
-    # ✅ Wengine wanaweza kuona users wengine (bila super_admin)
     return UserResponse.from_orm(user)
 
 
 # ============================================
-# ➕ POST /users/ — Unda (super_admin only)
+# ➕ POST /users/ — Unda (super_admin pekee)
 # ============================================
 @router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(
     user_data: UserCreate,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_super_admin),
+    current_user: User = Depends(get_current_super_admin),  # ✅ Super admin pekee
 ):
     result = await db.execute(select(User).where(User.email == user_data.email))
     existing = result.scalar_one_or_none()
@@ -173,7 +194,6 @@ async def create_user(
 
 # ============================================
 # ✏️ PUT /users/{id} — Hariri
-# ✅ Super Admin hawezi kubadilishwa na mtu mwingine
 # ============================================
 @router.put("/{user_id}", response_model=UserResponse)
 async def update_user(
@@ -194,6 +214,7 @@ async def update_user(
     if user_role == "super_admin" and user.id != current_user.id:
         raise HTTPException(403, "Hauwezi kubadilisha super admin")
 
+    # ✅ Kubadilisha role — super_admin pekee
     data = user_data.dict(exclude_unset=True)
 
     if "role" in data and data["role"]:
@@ -216,14 +237,13 @@ async def update_user(
 
 
 # ============================================
-# 🗑️ DELETE /users/{id} — Futa (super_admin only)
-# ✅ Super Admin hawezi kufutwa na mtu mwingine
+# 🗑️ DELETE /users/{id} — Futa (super_admin pekee)
 # ============================================
 @router.delete("/{user_id}")
 async def delete_user(
     user_id: str,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_super_admin),
+    current_user: User = Depends(get_current_super_admin),  # ✅ Super admin pekee
 ):
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
