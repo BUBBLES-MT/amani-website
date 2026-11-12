@@ -78,7 +78,7 @@ const NAV_ITEMS = [
     icon: FaUsers,
     label: "Watumiaji",
     href: "/admin/users",
-    roles: ["super_admin"],
+    roles: ["super_admin","mchungaji_kiongozi", "mchungaji_msaidizi"],
   },
   {
     icon: FaEnvelope,
