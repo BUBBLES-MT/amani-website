@@ -200,7 +200,7 @@ export default function HomePage() {
         <div className="relative z-10 max-w-3xl">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4 text-sm font-medium">
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-            Amani Luthelani Church - Karibu Nyumbani
+            KKKT Church, Usharika wa Amani Singida - Karibu Nyumbani
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold leading-tight mb-4">
