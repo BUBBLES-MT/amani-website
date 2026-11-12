@@ -40,7 +40,7 @@ from app.models.page_visitor import PageVisitor
 # ============================================
 # ✅ DATABASE URL — inamua ipi itumike
 # ============================================
-DATABASE_URL = settings.effective_database_url
+DATABASE_URL = settings.get_database_url()   # ✅
 
 # ✅ Onyesha host pekee (bila password)
 def _safe_host(url: str) -> str:
