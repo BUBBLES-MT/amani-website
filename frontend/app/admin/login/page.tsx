@@ -114,7 +114,7 @@ export default function AdminLoginPage() {
               <FaChurch className="text-white text-4xl" />
             </div>
             <h1 className="text-2xl font-serif font-bold text-white">
-              Amani Luthelani Church
+              KKKT Church-Usharika wa Amani Singida
             </h1>
             <p className="text-white/60 text-sm">Admin Panel</p>
           </div>
