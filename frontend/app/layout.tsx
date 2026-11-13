@@ -112,6 +112,16 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
+
+  // ✅ Format detection — kuzuia simu kufanya auto-detect
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+
+  // ✅ Referrer policy
+  referrer: "origin-when-cross-origin",
 };
 
 // ============================================
@@ -125,6 +135,8 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: light)", color: "#7c3aed" },
     { media: "(prefers-color-scheme: dark)", color: "#1e1b4b" },
   ],
+  // ✅ Rangi ya UI kwenye simu
+  colorScheme: "light dark",
 };
 
 // ============================================

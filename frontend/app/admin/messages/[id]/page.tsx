@@ -12,6 +12,8 @@ import {
   FaUser, FaPhone, FaCalendar, FaTag, FaTrash, FaArchive,
   FaClock, FaSave, FaTimes,
 } from "react-icons/fa";
+import AnimatedSection from "@/components/ui/AnimatedSection";
+import AnimatedStagger from "@/components/ui/AnimatedStagger";
 
 const STATUS_LABELS: Record<string, string> = {
   new: "Mpya",
@@ -179,25 +181,28 @@ export default function MessageDetailPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-10">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Link
-            href="/admin/messages"
-            className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
-          >
-            <FaArrowLeft className="text-gray-600" />
-          </Link>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">Maelezo ya Ujumbe</h1>
-            <p className="text-gray-500 text-sm mt-0.5">Ujumbe kutoka kwa mtumiaji</p>
+      {/* ===== HEADER ===== */}
+      <AnimatedSection>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <Link
+              href="/admin/messages"
+              className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+            >
+              <FaArrowLeft className="text-gray-600" />
+            </Link>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">Maelezo ya Ujumbe</h1>
+              <p className="text-gray-500 text-sm mt-0.5">Ujumbe kutoka kwa mtumiaji</p>
+            </div>
           </div>
+          <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border ${status.bg} ${status.text} ${status.border}`}>
+            <StatusIcon /> {STATUS_LABELS[message.status] || message.status}
+          </span>
         </div>
-        <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border ${status.bg} ${status.text} ${status.border}`}>
-          <StatusIcon /> {STATUS_LABELS[message.status] || message.status}
-        </span>
-      </div>
+      </AnimatedSection>
 
+      {/* ===== SAVE ERROR ===== */}
       {saveError && (
         <div className="p-4 bg-red-50 border-l-4 border-red-500 rounded-xl flex items-start gap-3">
           <FaExclamationTriangle className="text-red-500 mt-0.5 flex-shrink-0" />
@@ -208,91 +213,97 @@ export default function MessageDetailPage() {
         </div>
       )}
 
-      {/* Sender info */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-5 border-b border-gray-100">
-          <h2 className="font-bold text-lg text-gray-800">Mtumaji</h2>
+      {/* ===== SENDER INFO ===== */}
+      <AnimatedSection delay={0.1}>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-5 border-b border-gray-100">
+            <h2 className="font-bold text-lg text-gray-800">Mtumaji</h2>
+          </div>
+          <AnimatedStagger className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <DetailRow icon={FaUser} label="Jina" value={message.name} />
+            <DetailRow icon={FaEnvelope} label="Barua Pepe" value={message.email} />
+            <DetailRow icon={FaPhone} label="Simu" value={message.phone || "—"} />
+            <DetailRow icon={FaTag} label="Kategoria" value={message.category} />
+          </AnimatedStagger>
         </div>
-        <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <DetailRow icon={FaUser} label="Jina" value={message.name} />
-          <DetailRow icon={FaEnvelope} label="Barua Pepe" value={message.email} />
-          <DetailRow icon={FaPhone} label="Simu" value={message.phone || "—"} />
-          <DetailRow icon={FaTag} label="Kategoria" value={message.category} />
-        </div>
-      </div>
+      </AnimatedSection>
 
-      {/* Message content */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-5 border-b border-gray-100 flex items-center justify-between">
-          <div>
-            <h2 className="font-bold text-lg text-gray-800">
-              {message.subject || "Ujumbe"}
+      {/* ===== MESSAGE CONTENT ===== */}
+      <AnimatedSection>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-5 border-b border-gray-100 flex items-center justify-between">
+            <div>
+              <h2 className="font-bold text-lg text-gray-800">
+                {message.subject || "Ujumbe"}
+              </h2>
+              <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                <FaClock /> {formatDateTime(message.created_at)}
+              </p>
+            </div>
+          </div>
+          <div className="p-5">
+            <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+              {message.message}
+            </p>
+          </div>
+        </div>
+      </AnimatedSection>
+
+      {/* ===== REPLY SECTION ===== */}
+      <AnimatedSection>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-5 border-b border-gray-100">
+            <h2 className="font-bold text-lg text-gray-800 flex items-center gap-2">
+              <FaReply className="text-church-500" />
+              {message.reply_text ? "Jibu" : "Jibu Ujumbe"}
             </h2>
-            <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
-              <FaClock /> {formatDateTime(message.created_at)}
-            </p>
-          </div>
-        </div>
-        <div className="p-5">
-          <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-            {message.message}
-          </p>
-        </div>
-      </div>
-
-      {/* Reply section */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-5 border-b border-gray-100">
-          <h2 className="font-bold text-lg text-gray-800 flex items-center gap-2">
-            <FaReply className="text-church-500" />
-            {message.reply_text ? "Jibu" : "Jibu Ujumbe"}
-          </h2>
-          {message.replied_by_name && message.replied_at && (
-            <p className="text-xs text-gray-500 mt-1">
-              Ilijibiwa na <strong>{message.replied_by_name}</strong> • {formatDateTime(message.replied_at)}
-            </p>
-          )}
-        </div>
-        <div className="p-5 space-y-3">
-          <textarea
-            value={replyText}
-            onChange={(e) => setReplyText(e.target.value)}
-            rows={5}
-            placeholder="Andika jibu lako hapa..."
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm resize-none"
-          />
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={handleReply}
-              disabled={saving || !replyText.trim()}
-              className="inline-flex items-center gap-2 bg-church-500 hover:bg-church-600 disabled:bg-gray-300 text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors"
-            >
-              {saving ? (
-                <><FaSpinner className="animate-spin" /> Inatuma...</>
-              ) : (
-                <><FaReply /> {message.reply_text ? "Sasisha Jibu" : "Tuma Jibu"}</>
-              )}
-            </button>
-            {!message.is_archived && (
-              <button
-                onClick={handleArchive}
-                disabled={saving}
-                className="inline-flex items-center gap-2 bg-amber-100 hover:bg-amber-200 text-amber-800 px-5 py-2.5 rounded-xl font-medium text-sm transition-colors"
-              >
-                <FaArchive /> Weka Kumbukumbu
-              </button>
+            {message.replied_by_name && message.replied_at && (
+              <p className="text-xs text-gray-500 mt-1">
+                Ilijibiwa na <strong>{message.replied_by_name}</strong> • {formatDateTime(message.replied_at)}
+              </p>
             )}
-            <button
-              onClick={handleDelete}
-              disabled={deleting}
-              className="inline-flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2.5 rounded-xl font-medium text-sm transition-colors disabled:opacity-50"
-            >
-              {deleting ? <FaSpinner className="animate-spin" /> : <FaTrash />}
-              Futa
-            </button>
+          </div>
+          <div className="p-5 space-y-3">
+            <textarea
+              value={replyText}
+              onChange={(e) => setReplyText(e.target.value)}
+              rows={5}
+              placeholder="Andika jibu lako hapa..."
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm resize-none"
+            />
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={handleReply}
+                disabled={saving || !replyText.trim()}
+                className="inline-flex items-center gap-2 bg-church-500 hover:bg-church-600 disabled:bg-gray-300 text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors"
+              >
+                {saving ? (
+                  <><FaSpinner className="animate-spin" /> Inatuma...</>
+                ) : (
+                  <><FaReply /> {message.reply_text ? "Sasisha Jibu" : "Tuma Jibu"}</>
+                )}
+              </button>
+              {!message.is_archived && (
+                <button
+                  onClick={handleArchive}
+                  disabled={saving}
+                  className="inline-flex items-center gap-2 bg-amber-100 hover:bg-amber-200 text-amber-800 px-5 py-2.5 rounded-xl font-medium text-sm transition-colors"
+                >
+                  <FaArchive /> Weka Kumbukumbu
+                </button>
+              )}
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="inline-flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2.5 rounded-xl font-medium text-sm transition-colors disabled:opacity-50"
+              >
+                {deleting ? <FaSpinner className="animate-spin" /> : <FaTrash />}
+                Futa
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </AnimatedSection>
     </div>
   );
 }

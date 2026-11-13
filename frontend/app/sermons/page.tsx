@@ -9,6 +9,13 @@ import {
   FaPlay, FaDownload, FaCalendar, FaUser, FaClock,
   FaSearch, FaFilter, FaSpinner, FaExclamationTriangle,
 } from "react-icons/fa";
+import AnimatedSection from "@/components/ui/AnimatedSection";
+import AnimatedStagger from "@/components/ui/AnimatedStagger";
+import {
+  AnimatedHero,
+  AnimatedHeroItem,
+  AnimatedHeroText,
+} from "@/components/ui/AnimatedHero";
 
 export default function SermonsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,7 +35,6 @@ export default function SermonsPage() {
       try {
         const data = await publicApi.sermons(50);
         setSermons(Array.isArray(data) ? data : []);
-        console.log("✅ Sermons loaded:", data);
       } catch (err: any) {
         console.error("❌ Sermons fetch error:", err);
         setError(err.message || "Imeshindwa kupata mahubiri");
@@ -75,31 +81,39 @@ export default function SermonsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
-      {/* HERO */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-church-600 via-church-700 to-church-900 text-white p-8 md:p-16 mb-12 shadow-2xl">
+      {/* ===== HERO ===== */}
+      <AnimatedHero className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-church-600 via-church-700 to-church-900 text-white p-8 md:p-16 mb-12 shadow-2xl">
         <div className="absolute inset-0 bg-black/20 z-0"></div>
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-gold-500/10 rounded-full blur-3xl"></div>
 
         <div className="relative z-10 max-w-3xl">
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4 text-sm font-medium">
-            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-            Mahubiri
-          </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold leading-tight mb-4">
-            Mahubiri <span className="text-gold-300">Yetu</span>
-          </h1>
-          <p className="text-lg md:text-xl opacity-90 max-w-2xl leading-relaxed">
-            Sikiliza na ujifunze kutoka kwa neno la Mungu kupitia mahubiri yetu.
-          </p>
+          <AnimatedHeroItem>
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4 text-sm font-medium">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              Mahubiri
+            </div>
+          </AnimatedHeroItem>
+
+          <AnimatedHeroText>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold leading-tight mb-4">
+              Mahubiri <span className="text-gold-300">Yetu</span>
+            </h1>
+          </AnimatedHeroText>
+
+          <AnimatedHeroItem>
+            <p className="text-lg md:text-xl opacity-90 max-w-2xl leading-relaxed">
+              Sikiliza na ujifunze kutoka kwa neno la Mungu kupitia mahubiri yetu.
+            </p>
+          </AnimatedHeroItem>
         </div>
 
         <div className="absolute right-4 md:right-12 top-1/2 -translate-y-1/2 opacity-10 text-[12rem] md:text-[18rem] select-none">
           🎙️
         </div>
-      </section>
+      </AnimatedHero>
 
-      {/* ERROR */}
+      {/* ===== ERROR ===== */}
       {error && (
         <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-xl flex items-start gap-3">
           <FaExclamationTriangle className="text-red-500 mt-0.5 flex-shrink-0" />
@@ -115,8 +129,8 @@ export default function SermonsPage() {
         </div>
       )}
 
-      {/* SEARCH & FILTER */}
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
+      {/* ===== SEARCH & FILTER ===== */}
+      <AnimatedSection className="flex flex-col md:flex-row gap-4 mb-8">
         <div className="flex-1 relative">
           <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
@@ -143,9 +157,9 @@ export default function SermonsPage() {
             </button>
           ))}
         </div>
-      </div>
+      </AnimatedSection>
 
-      {/* SERMONS GRID */}
+      {/* ===== SERMONS GRID ===== */}
       {loading ? (
         <div className="text-center py-16">
           <FaSpinner className="animate-spin text-5xl text-church-500 mx-auto" />
@@ -160,7 +174,7 @@ export default function SermonsPage() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <AnimatedStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredSermons.map((sermon) => (
             <div key={sermon.id} className="card group hover:scale-[1.02] transition-all duration-300">
               {/* Thumbnail */}
@@ -225,11 +239,11 @@ export default function SermonsPage() {
               </div>
             </div>
           ))}
-        </div>
+        </AnimatedStagger>
       )}
 
-      {/* CTA */}
-      <section className="mt-12 bg-gradient-to-r from-church-500 to-church-700 rounded-3xl p-8 md:p-12 text-center text-white">
+      {/* ===== CTA ===== */}
+      <AnimatedSection className="mt-12 bg-gradient-to-r from-church-500 to-church-700 rounded-3xl p-8 md:p-12 text-center text-white">
         <h2 className="text-2xl md:text-3xl font-serif font-bold mb-4">Je, Una Swali?</h2>
         <p className="text-lg opacity-90 mb-6 max-w-2xl mx-auto">
           Wasiliana nasi kwa maswali yoyote kuhusu mahubiri yetu.
@@ -237,7 +251,7 @@ export default function SermonsPage() {
         <Link href="/contact" className="btn-secondary inline-flex items-center gap-2 text-base px-8 py-3">
           <FaUser /> Wasiliana Nasi
         </Link>
-      </section>
+      </AnimatedSection>
     </div>
   );
 }

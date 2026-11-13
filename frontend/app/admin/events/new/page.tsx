@@ -10,6 +10,7 @@ import {
   FaArrowLeft, FaSave, FaSpinner, FaExclamationTriangle,
   FaUpload, FaTimes, FaCheckCircle, FaImage, FaVideo, FaMusic, FaFilePdf,
 } from "react-icons/fa";
+import AnimatedSection from "@/components/ui/AnimatedSection";
 
 const CATEGORIES = [
   "Ibada", "Vijana", "Wanawake", "Mafunzo", "Huduma", "Nyingine",
@@ -45,9 +46,9 @@ export default function NewEventPage() {
     organizer_email: "",
     max_attendees: "",
     image_url: "",
-    video_url: "",   // ✅ Mpya
-    audio_url: "",   // ✅ Mpya
-    pdf_url: "",     // ✅ Mpya
+    video_url: "",
+    audio_url: "",
+    pdf_url: "",
     status: "upcoming",
   });
 
@@ -113,9 +114,9 @@ export default function NewEventPage() {
         organizer_email: form.organizer_email || undefined,
         max_attendees: form.max_attendees ? Number(form.max_attendees) : undefined,
         image_url: form.image_url || undefined,
-        video_url: form.video_url || undefined,   // ✅ Mpya
-        audio_url: form.audio_url || undefined,   // ✅ Mpya
-        pdf_url: form.pdf_url || undefined,       // ✅ Mpya
+        video_url: form.video_url || undefined,
+        audio_url: form.audio_url || undefined,
+        pdf_url: form.pdf_url || undefined,
         status: form.status,
       };
       await eventsApi.create(payload);
@@ -130,16 +131,25 @@ export default function NewEventPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 pb-10">
-      <div className="flex items-center gap-4">
-        <Link href="/admin/events" className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
-          <FaArrowLeft className="text-gray-600" />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Ongeza Tukio</h1>
-          <p className="text-gray-500 text-sm mt-0.5">Jaza taarifa za tukio</p>
+      {/* ===== HEADER ===== */}
+      <AnimatedSection>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/admin/events"
+            className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+          >
+            <FaArrowLeft className="text-gray-600" />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Ongeza Tukio</h1>
+            <p className="text-gray-500 text-sm mt-0.5">
+              Jaza taarifa za tukio
+            </p>
+          </div>
         </div>
-      </div>
+      </AnimatedSection>
 
+      {/* ===== ERROR ===== */}
       {error && (
         <div className="p-4 bg-red-50 border-l-4 border-red-500 rounded-xl flex items-start gap-3">
           <FaExclamationTriangle className="text-red-500 mt-0.5 flex-shrink-0" />
@@ -147,219 +157,220 @@ export default function NewEventPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-6 space-y-5">
-        {/* Title */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Kichwa cha Tukio <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text" name="title" value={form.title} onChange={handleChange}
-            required placeholder="Mfano: Mkutano wa Vijana"
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm"
-          />
-        </div>
-
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Maelezo</label>
-          <textarea
-            name="description" value={form.description} onChange={handleChange}
-            rows={3} placeholder="Maelezo ya tukio..."
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm resize-none"
-          />
-        </div>
-
-        {/* Category + Status */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      {/* ===== FORM ===== */}
+      <AnimatedSection delay={0.1}>
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm p-6 space-y-5">
+          {/* Title */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Aina <span className="text-red-500">*</span>
+              Kichwa cha Tukio <span className="text-red-500">*</span>
             </label>
-            <select name="category" value={form.category} onChange={handleChange}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm bg-white">
-              {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
+            <input
+              type="text" name="title" value={form.title} onChange={handleChange}
+              required placeholder="Mfano: Mkutano wa Vijana"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm"
+            />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Hali <span className="text-red-500">*</span>
-            </label>
-            <select name="status" value={form.status} onChange={handleChange}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm bg-white">
-              {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-            </select>
-          </div>
-        </div>
 
-        {/* Dates */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Tarehe ya Kuanza <span className="text-red-500">*</span>
-            </label>
-            <input type="date" name="start_date" value={form.start_date} onChange={handleChange} required
+            <label className="block text-sm font-medium text-gray-700 mb-2">Maelezo</label>
+            <textarea
+              name="description" value={form.description} onChange={handleChange}
+              rows={3} placeholder="Maelezo ya tukio..."
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm resize-none"
+            />
+          </div>
+
+          {/* Category + Status */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Aina <span className="text-red-500">*</span>
+              </label>
+              <select name="category" value={form.category} onChange={handleChange}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm bg-white">
+                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Hali <span className="text-red-500">*</span>
+              </label>
+              <select name="status" value={form.status} onChange={handleChange}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm bg-white">
+                {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+              </select>
+            </div>
+          </div>
+
+          {/* Dates */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tarehe ya Kuanza <span className="text-red-500">*</span>
+              </label>
+              <input type="date" name="start_date" value={form.start_date} onChange={handleChange} required
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Tarehe ya Mwisho</label>
+              <input type="date" name="end_date" value={form.end_date} onChange={handleChange}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
+            </div>
+          </div>
+
+          {/* Times */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Muda wa Kuanza</label>
+              <input type="time" name="start_time" value={form.start_time} onChange={handleChange}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Muda wa Mwisho</label>
+              <input type="time" name="end_time" value={form.end_time} onChange={handleChange}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
+            </div>
+          </div>
+
+          {/* Location */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Mahali</label>
+              <input type="text" name="location" value={form.location} onChange={handleChange}
+                placeholder="Mfano: Kanisa Kuu"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Ukumbi</label>
+              <input type="text" name="venue" value={form.venue} onChange={handleChange}
+                placeholder="Mfano: Ukumbi Mkubwa"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
+            </div>
+          </div>
+
+          {/* Online */}
+          <div className="flex items-center gap-3">
+            <input type="checkbox" name="is_online" checked={form.is_online} onChange={handleChange} id="is_online"
+              className="w-4 h-4 text-church-500 rounded focus:ring-church-400" />
+            <label htmlFor="is_online" className="text-sm text-gray-700">Tukio ni la mtandaoni</label>
+          </div>
+
+          {form.is_online && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Kiungo cha Mtandaoni</label>
+              <input type="url" name="meeting_link" value={form.meeting_link} onChange={handleChange}
+                placeholder="https://zoom.us/..."
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
+            </div>
+          )}
+
+          {/* Organizer */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Mratibu</label>
+              <input type="text" name="organizer" value={form.organizer} onChange={handleChange}
+                placeholder="Jina la mratibu"
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Simu ya Mratibu</label>
+              <input type="tel" name="organizer_contact" value={form.organizer_contact} onChange={handleChange}
+                placeholder="+255..."
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Barua Pepe ya Mratibu</label>
+            <input type="email" name="organizer_email" value={form.organizer_email} onChange={handleChange}
+              placeholder="email@example.com"
               className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Tarehe ya Mwisho</label>
-            <input type="date" name="end_date" value={form.end_date} onChange={handleChange}
+            <label className="block text-sm font-medium text-gray-700 mb-2">Idadi ya Juu ya Washiriki</label>
+            <input type="number" name="max_attendees" value={form.max_attendees} onChange={handleChange}
+              min={0} placeholder="Mfano: 100"
               className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
           </div>
-        </div>
 
-        {/* Times */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Muda wa Kuanza</label>
-            <input type="time" name="start_time" value={form.start_time} onChange={handleChange}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
+          {/* ===== FILE UPLOADS ===== */}
+          <div className="border-t border-gray-100 pt-5 space-y-4">
+            <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2">
+              <span className="w-1 h-4 bg-church-500 rounded-full" />
+              Faili za Tukio
+            </h3>
+            <p className="text-xs text-gray-500">
+              Pakia picha, video, au audio — kwa matukio yaliyopita kama kwaya zilizoimba
+            </p>
+
+            {/* Image */}
+            <FileUploadField
+              label="Picha ya Tukio"
+              icon={FaImage}
+              accept=".jpg,.jpeg,.png,.webp,.gif"
+              field="image_url"
+              value={form.image_url}
+              uploading={uploading === "image_url"}
+              onChange={(e) => handleFileUpload(e, "image_url", "image")}
+              onClear={() => clearFile("image_url")}
+              hint="JPG, PNG, WEBP, GIF • Hadi 10 MB"
+            />
+
+            {/* Video */}
+            <FileUploadField
+              label="Video (Kwa Matukio Yaliyopita)"
+              icon={FaVideo}
+              accept=".mp4,.mov,.avi,.mkv,.webm"
+              field="video_url"
+              value={form.video_url}
+              uploading={uploading === "video_url"}
+              onChange={(e) => handleFileUpload(e, "video_url", "video")}
+              onClear={() => clearFile("video_url")}
+              hint="MP4, MOV, AVI, MKV, WEBM • Hadi 500 MB"
+            />
+
+            {/* Audio */}
+            <FileUploadField
+              label="Audio (Kwaya, Mahubiri, n.k.)"
+              icon={FaMusic}
+              accept=".mp3,.wav,.m4a,.ogg,.aac"
+              field="audio_url"
+              value={form.audio_url}
+              uploading={uploading === "audio_url"}
+              onChange={(e) => handleFileUpload(e, "audio_url", "audio")}
+              onClear={() => clearFile("audio_url")}
+              hint="MP3, WAV, M4A, OGG, AAC • Hadi 50 MB"
+            />
+
+            {/* PDF */}
+            <FileUploadField
+              label="PDF (Programu, n.k.)"
+              icon={FaFilePdf}
+              accept=".pdf"
+              field="pdf_url"
+              value={form.pdf_url}
+              uploading={uploading === "pdf_url"}
+              onChange={(e) => handleFileUpload(e, "pdf_url", "pdf")}
+              onClear={() => clearFile("pdf_url")}
+              hint="PDF • Hadi 20 MB"
+            />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Muda wa Mwisho</label>
-            <input type="time" name="end_time" value={form.end_time} onChange={handleChange}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
+
+          {/* Buttons */}
+          <div className="flex gap-3 pt-2 border-t border-gray-100">
+            <button type="submit" disabled={saving || !!uploading}
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-church-500 hover:bg-church-600 disabled:bg-gray-300 text-white px-5 py-2.5 rounded-xl transition-colors font-medium text-sm shadow-sm">
+              {saving ? <><FaSpinner className="animate-spin" /> Inahifadhi...</> : <><FaSave /> Hifadhi Tukio</>}
+            </button>
+            <Link href="/admin/events" className="px-5 py-2.5 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors font-medium text-sm text-center">
+              Ghairi
+            </Link>
           </div>
-        </div>
-
-        {/* Location */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Mahali</label>
-            <input type="text" name="location" value={form.location} onChange={handleChange}
-              placeholder="Mfano: Kanisa Kuu"
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Ukumbi</label>
-            <input type="text" name="venue" value={form.venue} onChange={handleChange}
-              placeholder="Mfano: Ukumbi Mkubwa"
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
-          </div>
-        </div>
-
-        {/* Online */}
-        <div className="flex items-center gap-3">
-          <input type="checkbox" name="is_online" checked={form.is_online} onChange={handleChange} id="is_online"
-            className="w-4 h-4 text-church-500 rounded focus:ring-church-400" />
-          <label htmlFor="is_online" className="text-sm text-gray-700">Tukio ni la mtandaoni</label>
-        </div>
-
-        {form.is_online && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Kiungo cha Mtandaoni</label>
-            <input type="url" name="meeting_link" value={form.meeting_link} onChange={handleChange}
-              placeholder="https://zoom.us/..."
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
-          </div>
-        )}
-
-        {/* Organizer */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Mratibu</label>
-            <input type="text" name="organizer" value={form.organizer} onChange={handleChange}
-              placeholder="Jina la mratibu"
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Simu ya Mratibu</label>
-            <input type="tel" name="organizer_contact" value={form.organizer_contact} onChange={handleChange}
-              placeholder="+255..."
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Barua Pepe ya Mratibu</label>
-          <input type="email" name="organizer_email" value={form.organizer_email} onChange={handleChange}
-            placeholder="email@example.com"
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Idadi ya Juu ya Washiriki</label>
-          <input type="number" name="max_attendees" value={form.max_attendees} onChange={handleChange}
-            min={0} placeholder="Mfano: 100"
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm" />
-        </div>
-
-        {/* ============================================ */}
-        {/* ✅ FILE UPLOADS (Picha, Video, Audio, PDF) */}
-        {/* ============================================ */}
-        <div className="border-t border-gray-100 pt-5 space-y-4">
-          <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2">
-            <span className="w-1 h-4 bg-church-500 rounded-full" />
-            Faili za Tukio
-          </h3>
-          <p className="text-xs text-gray-500">
-            Pakia picha, video, au audio — kwa matukio yaliyopita kama kwaya zilizoimba
-          </p>
-
-          {/* Image */}
-          <FileUploadField
-            label="Picha ya Tukio"
-            icon={FaImage}
-            accept=".jpg,.jpeg,.png,.webp,.gif"
-            field="image_url"
-            value={form.image_url}
-            uploading={uploading === "image_url"}
-            onChange={(e) => handleFileUpload(e, "image_url", "image")}
-            onClear={() => clearFile("image_url")}
-            hint="JPG, PNG, WEBP, GIF • Hadi 10 MB"
-          />
-
-          {/* Video ✅ MPYA */}
-          <FileUploadField
-            label="Video (Kwa Matukio Yaliyopita)"
-            icon={FaVideo}
-            accept=".mp4,.mov,.avi,.mkv,.webm"
-            field="video_url"
-            value={form.video_url}
-            uploading={uploading === "video_url"}
-            onChange={(e) => handleFileUpload(e, "video_url", "video")}
-            onClear={() => clearFile("video_url")}
-            hint="MP4, MOV, AVI, MKV, WEBM • Hadi 500 MB"
-          />
-
-          {/* Audio ✅ MPYA */}
-          <FileUploadField
-            label="Audio (Kwaya, Mahubiri, n.k.)"
-            icon={FaMusic}
-            accept=".mp3,.wav,.m4a,.ogg,.aac"
-            field="audio_url"
-            value={form.audio_url}
-            uploading={uploading === "audio_url"}
-            onChange={(e) => handleFileUpload(e, "audio_url", "audio")}
-            onClear={() => clearFile("audio_url")}
-            hint="MP3, WAV, M4A, OGG, AAC • Hadi 50 MB"
-          />
-
-          {/* PDF ✅ MPYA */}
-          <FileUploadField
-            label="PDF (Programu, n.k.)"
-            icon={FaFilePdf}
-            accept=".pdf"
-            field="pdf_url"
-            value={form.pdf_url}
-            uploading={uploading === "pdf_url"}
-            onChange={(e) => handleFileUpload(e, "pdf_url", "pdf")}
-            onClear={() => clearFile("pdf_url")}
-            hint="PDF • Hadi 20 MB"
-          />
-        </div>
-
-        {/* Buttons */}
-        <div className="flex gap-3 pt-2 border-t border-gray-100">
-          <button type="submit" disabled={saving || !!uploading}
-            className="flex-1 inline-flex items-center justify-center gap-2 bg-church-500 hover:bg-church-600 disabled:bg-gray-300 text-white px-5 py-2.5 rounded-xl transition-colors font-medium text-sm shadow-sm">
-            {saving ? <><FaSpinner className="animate-spin" /> Inahifadhi...</> : <><FaSave /> Hifadhi Tukio</>}
-          </button>
-          <Link href="/admin/events" className="px-5 py-2.5 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors font-medium text-sm text-center">
-            Ghairi
-          </Link>
-        </div>
-      </form>
+        </form>
+      </AnimatedSection>
     </div>
   );
 }

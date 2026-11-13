@@ -29,6 +29,14 @@ import {
   FaUsers,
 } from "react-icons/fa";
 import { BiChevronRight } from "react-icons/bi";
+import AnimatedSection from "@/components/ui/AnimatedSection";
+import AnimatedStagger from "@/components/ui/AnimatedStagger";
+import {
+  AnimatedHero,
+  AnimatedHeroItem,
+  AnimatedHeroText,
+} from "@/components/ui/AnimatedHero";
+import { fadeInScale } from "@/lib/animations";
 
 export default function HomePage() {
   const [loading, setLoading] = useState(true);
@@ -109,14 +117,13 @@ export default function HomePage() {
           path: "/",
         })
         .catch((err) => {
-          // Kimya kimya — usivunje homepage kama track inashindikana
           console.warn("⚠️ Visitor track failed:", err);
         });
     }
   }, []);
 
   // ============================================================
-  // 📊 QUICK STATS (na Visitor Counter)
+  // 📊 QUICK STATS
   // ============================================================
   const quickStats = [
     {
@@ -155,7 +162,7 @@ export default function HomePage() {
   ];
 
   // ============================================================
-  // 🎨 MINISTRIES (Static)
+  // 🎨 MINISTRIES
   // ============================================================
   const ministries = [
     { name: "Waimbaji", description: "Timu ya waimbaji wa kanisa", icon: "🎵" },
@@ -192,56 +199,63 @@ export default function HomePage() {
   return (
     <div className="container mx-auto px-4 py-6 md:py-10">
       {/* ===== HERO ===== */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-church-600 via-church-700 to-church-900 text-white p-8 md:p-16 mb-10 md:mb-16 shadow-2xl">
+      <AnimatedHero className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-church-600 via-church-700 to-church-900 text-white p-8 md:p-16 mb-10 md:mb-16 shadow-2xl">
         <div className="absolute inset-0 bg-black/20 z-0"></div>
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-gold-500/10 rounded-full blur-3xl"></div>
 
         <div className="relative z-10 max-w-3xl">
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4 text-sm font-medium">
-            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-            KKKT Church, Usharika wa Amani Singida - Karibu Nyumbani
-          </div>
+          <AnimatedHeroItem>
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4 text-sm font-medium">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              KKKT Church, Usharika wa Amani Singida - Karibu Nyumbani
+            </div>
+          </AnimatedHeroItem>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold leading-tight mb-4">
-            Karibu Kanisani
-          </h1>
+          <AnimatedHeroText>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold leading-tight mb-4">
+              Karibu Kanisani
+            </h1>
+          </AnimatedHeroText>
 
-          <p className="text-lg md:text-xl lg:text-2xl opacity-90 mb-6 max-w-2xl leading-relaxed">
-            Mungu ni mwema, na upendo Wake unadumu milele.
-            <span className="block text-gold-300 font-semibold mt-1">
-              Pamoja tunakua katika imani
-            </span>
-          </p>
+          <AnimatedHeroItem>
+            <p className="text-lg md:text-xl lg:text-2xl opacity-90 mb-6 max-w-2xl leading-relaxed">
+              Mungu ni mwema, na upendo Wake unadumu milele.
+              <span className="block text-gold-300 font-semibold mt-1">
+                Pamoja tunakua katika imani
+              </span>
+            </p>
+          </AnimatedHeroItem>
 
-          <div className="flex flex-wrap gap-4">
-            <Link
-              href="/about"
-              className="btn-secondary inline-flex items-center gap-2 text-base px-6 py-3 rounded-xl shadow-lg hover:shadow-xl"
-            >
-              <FaChurch /> Jifunze Zaidi
-              <BiChevronRight className="text-xl" />
-            </Link>
-            <Link
-              href="/contact"
-              className="border-2 border-white/80 text-white hover:bg-white hover:text-church-700 px-6 py-3 rounded-xl transition-all duration-300 inline-flex items-center gap-2 text-base backdrop-blur-sm hover:shadow-xl"
-            >
-              <FaHeart /> Wasiliana Nasi
-            </Link>
-            {/* ✅ FIX: /login → /admin/login */}
-            <Link
-              href="/admin/login"
-              className="bg-gradient-to-r from-gold-500 to-gold-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center gap-2 text-base font-bold"
-            >
-              <FaLock /> Ingia Kama Kiongozi
-            </Link>
-          </div>
+          <AnimatedHeroItem>
+            <div className="flex flex-wrap gap-4">
+              <Link
+                href="/about"
+                className="btn-secondary inline-flex items-center gap-2 text-base px-6 py-3 rounded-xl shadow-lg hover:shadow-xl"
+              >
+                <FaChurch /> Jifunze Zaidi
+                <BiChevronRight className="text-xl" />
+              </Link>
+              <Link
+                href="/contact"
+                className="border-2 border-white/80 text-white hover:bg-white hover:text-church-700 px-6 py-3 rounded-xl transition-all duration-300 inline-flex items-center gap-2 text-base backdrop-blur-sm hover:shadow-xl"
+              >
+                <FaHeart /> Wasiliana Nasi
+              </Link>
+              <Link
+                href="/admin/login"
+                className="bg-gradient-to-r from-gold-500 to-gold-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 inline-flex items-center gap-2 text-base font-bold"
+              >
+                <FaLock /> Ingia Kama Kiongozi
+              </Link>
+            </div>
+          </AnimatedHeroItem>
         </div>
 
         <div className="absolute right-4 md:right-12 top-1/2 -translate-y-1/2 opacity-10 text-[12rem] md:text-[18rem] select-none">
           ✝️
         </div>
-      </section>
+      </AnimatedHero>
 
       {/* ===== ERROR ===== */}
       {error && (
@@ -260,31 +274,33 @@ export default function HomePage() {
       )}
 
       {/* ===== QUICK STATS ===== */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-10 md:mb-16">
-        {quickStats.map((stat, i) => (
-          <div
-            key={i}
-            className="card p-6 text-center hover:scale-105 transition-all duration-300"
-          >
-            <stat.icon
-              className={`text-4xl md:text-5xl ${stat.color} mx-auto mb-3`}
-            />
-            <h4 className="text-2xl md:text-3xl font-bold text-gray-800">
-              {loading ? (
-                <FaSpinner className="animate-spin inline text-church-500" />
-              ) : (
-                stat.value
-              )}
-            </h4>
-            <p className="text-sm md:text-base text-gray-500 font-medium">
-              {stat.label}
-            </p>
-          </div>
-        ))}
-      </section>
+      <AnimatedSection className="mb-10 md:mb-16">
+        <AnimatedStagger className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          {quickStats.map((stat, i) => (
+            <div
+              key={i}
+              className="card p-6 text-center hover:scale-105 transition-all duration-300"
+            >
+              <stat.icon
+                className={`text-4xl md:text-5xl ${stat.color} mx-auto mb-3`}
+              />
+              <h4 className="text-2xl md:text-3xl font-bold text-gray-800">
+                {loading ? (
+                  <FaSpinner className="animate-spin inline text-church-500" />
+                ) : (
+                  stat.value
+                )}
+              </h4>
+              <p className="text-sm md:text-base text-gray-500 font-medium">
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </AnimatedStagger>
+      </AnimatedSection>
 
       {/* ===== UPCOMING EVENTS ===== */}
-      <section className="mb-10 md:mb-16">
+      <AnimatedSection className="mb-10 md:mb-16">
         <div className="text-center mb-8 md:mb-12">
           <h2 className="section-title">Matukio Yajayo</h2>
           <p className="section-subtitle">
@@ -309,7 +325,7 @@ export default function HomePage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <AnimatedStagger className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {events.map((event, i) => (
               <div
                 key={event.id || i}
@@ -354,12 +370,12 @@ export default function HomePage() {
                 </div>
               </div>
             ))}
-          </div>
+          </AnimatedStagger>
         )}
-      </section>
+      </AnimatedSection>
 
       {/* ===== LATEST SERMONS ===== */}
-      <section className="mb-10 md:mb-16">
+      <AnimatedSection className="mb-10 md:mb-16">
         <div className="text-center mb-8 md:mb-12">
           <h2 className="section-title">Mahubiri ya Hivi Karibuni</h2>
           <p className="section-subtitle">
@@ -384,7 +400,7 @@ export default function HomePage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <AnimatedStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sermons.map((sermon, i) => (
               <div
                 key={sermon.id || i}
@@ -444,12 +460,12 @@ export default function HomePage() {
                 </div>
               </div>
             ))}
-          </div>
+          </AnimatedStagger>
         )}
-      </section>
+      </AnimatedSection>
 
       {/* ===== MINISTRIES ===== */}
-      <section>
+      <AnimatedSection>
         <div className="text-center mb-8 md:mb-12">
           <h2 className="section-title">Huduma Zetu</h2>
           <p className="section-subtitle">
@@ -457,7 +473,7 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <AnimatedStagger className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {ministries.map((ministry, i) => (
             <div
               key={i}
@@ -472,8 +488,8 @@ export default function HomePage() {
               </p>
             </div>
           ))}
-        </div>
-      </section>
+        </AnimatedStagger>
+      </AnimatedSection>
     </div>
   );
 }

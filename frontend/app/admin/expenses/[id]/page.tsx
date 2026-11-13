@@ -11,6 +11,8 @@ import {
   FaClock, FaUniversity, FaUser, FaMoneyBillWave, FaInfoCircle,
   FaHistory, FaTimes, FaCheck, FaLock,
 } from "react-icons/fa";
+import AnimatedSection from "@/components/ui/AnimatedSection";
+import AnimatedStagger from "@/components/ui/AnimatedStagger";
 
 // ============================================
 // 🎨 STATUS CONFIG
@@ -44,8 +46,6 @@ const STATUS_CONFIG: Record<string, {
 // ============================================
 // ✅ ROLES — Internal Control
 // ⚠️ MHASIBU HAYUPO kwenye APPROVE_ROLES!
-// Mhasibu: anaomba + anaona + anatoa fedha
-// Mhasibu: HAIDHINISHA (internal control)
 // ============================================
 const APPROVE_ROLES = [
   "super_admin",
@@ -74,7 +74,6 @@ export default function ExpenseDetailPage() {
   const [expense, setExpense] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
 
-  // Action states
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState("");
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
@@ -102,9 +101,6 @@ export default function ExpenseDetailPage() {
     fetchExpense();
   }, [id]);
 
-  // ============================================
-  // 🎨 FORMAT
-  // ============================================
   const formatCurrency = (n: number) =>
     new Intl.NumberFormat("sw-TZ", {
       style: "currency",
@@ -127,9 +123,6 @@ export default function ExpenseDetailPage() {
     }
   };
 
-  // ============================================
-  // ✅ APPROVE
-  // ============================================
   const handleApprove = async () => {
     if (!confirm("Una uhakika unataka kuidhinisha matumizi haya?")) return;
 
@@ -146,9 +139,6 @@ export default function ExpenseDetailPage() {
     }
   };
 
-  // ============================================
-  // 💰 WITHDRAW
-  // ============================================
   const handleWithdraw = async () => {
     setActionLoading(true);
     setActionError("");
@@ -167,9 +157,6 @@ export default function ExpenseDetailPage() {
     }
   };
 
-  // ============================================
-  // ⏳ LOADING
-  // ============================================
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -181,9 +168,6 @@ export default function ExpenseDetailPage() {
     );
   }
 
-  // ============================================
-  // ❌ ERROR
-  // ============================================
   if (error || !expense) {
     return (
       <div className="max-w-2xl mx-auto space-y-4">
@@ -204,98 +188,89 @@ export default function ExpenseDetailPage() {
   const status = STATUS_CONFIG[expense.status] || STATUS_CONFIG["Imeombwa"];
   const StatusIcon = status.icon;
 
-  // ✅ Ruhusa
   const userRole = (user?.role || "").toLowerCase();
   const userId = user?.id || "";
   const isRequester = expense.requested_by === userId;
   const isMhasibu = userRole === "mhasibu";
 
-  // ✅ APPROVE: mhasibu HAWEZI (internal control)
-  // ✅ Mtu HAWEZI kuidhinisha yake mwenyewe
   const canApprove =
     expense.status === "Imeombwa" &&
     APPROVE_ROLES.includes(userRole) &&
     !isRequester;
 
-  // ✅ WITHDRAW: mhasibu anaweza (baada ya idhini)
   const canWithdraw =
     expense.status === "Imeidhinishwa" && WITHDRAW_ROLES.includes(userRole);
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-10">
-      {/* ============================================ */}
-      {/* HEADER + VITUFE */}
-      {/* ============================================ */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Link
-            href="/admin/expenses"
-            className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
-          >
-            <FaArrowLeft className="text-gray-600" />
-          </Link>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">
-              Maelezo ya Matumizi
-            </h1>
-            <p className="text-gray-500 text-sm mt-0.5">
-              Taarifa kamili za matumizi
-            </p>
+      {/* ===== HEADER ===== */}
+      <AnimatedSection>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <Link
+              href="/admin/expenses"
+              className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+            >
+              <FaArrowLeft className="text-gray-600" />
+            </Link>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">
+                Maelezo ya Matumizi
+              </h1>
+              <p className="text-gray-500 text-sm mt-0.5">
+                Taarifa kamili za matumizi
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            <span
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border ${status.bg} ${status.color} ${status.border}`}
+            >
+              <StatusIcon /> {status.label}
+            </span>
+
+            {canApprove && (
+              <button
+                onClick={handleApprove}
+                disabled={actionLoading}
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm transition-colors"
+              >
+                {actionLoading ? (
+                  <FaSpinner className="animate-spin" />
+                ) : (
+                  <FaCheckCircle />
+                )}
+                Idhinisha
+              </button>
+            )}
+
+            {isMhasibu && expense.status === "Imeombwa" && (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-amber-50 text-amber-800 border border-amber-300">
+                <FaLock className="text-xs" />
+                Inasubiri Idhini ya Mchungaji
+              </div>
+            )}
+
+            {!isMhasibu && isRequester && expense.status === "Imeombwa" && (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50 text-gray-600 border border-gray-300">
+                <FaLock className="text-xs" />
+                Hauwezi Kuidhinisha Yako
+              </div>
+            )}
+
+            {canWithdraw && (
+              <button
+                onClick={() => setShowWithdrawModal(true)}
+                disabled={actionLoading}
+                className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-300 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm transition-colors"
+              >
+                <FaUniversity /> Toa Fedha
+              </button>
+            )}
           </div>
         </div>
-
-        {/* ✅ Status badge + vitendo */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <span
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border ${status.bg} ${status.color} ${status.border}`}
-          >
-            <StatusIcon /> {status.label}
-          </span>
-
-          {/* ✅ Button "Idhinisha" — mhasibu HAIONI */}
-          {canApprove && (
-            <button
-              onClick={handleApprove}
-              disabled={actionLoading}
-              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm transition-colors"
-            >
-              {actionLoading ? (
-                <FaSpinner className="animate-spin" />
-              ) : (
-                <FaCheckCircle />
-              )}
-              Idhinisha
-            </button>
-          )}
-
-          {/* ✅ Mhasibu: badge "Inasubiri Idhini ya Mchungaji" */}
-          {isMhasibu && expense.status === "Imeombwa" && (
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-amber-50 text-amber-800 border border-amber-300">
-              <FaLock className="text-xs" />
-              Inasubiri Idhini ya Mchungaji
-            </div>
-          )}
-
-          {/* ✅ Requester: badge "Hauwezi Kuidhinisha Yako" */}
-          {!isMhasibu && isRequester && expense.status === "Imeombwa" && (
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gray-50 text-gray-600 border border-gray-300">
-              <FaLock className="text-xs" />
-              Hauwezi Kuidhinisha Yako
-            </div>
-          )}
-
-          {/* ✅ Button "Toa Fedha" — mhasibu anaona baada ya idhini */}
-          {canWithdraw && (
-            <button
-              onClick={() => setShowWithdrawModal(true)}
-              disabled={actionLoading}
-              className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-300 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm transition-colors"
-            >
-              <FaUniversity /> Toa Fedha
-            </button>
-          )}
-        </div>
-      </div>
+      </AnimatedSection>
 
       {/* Action error */}
       {actionError && (
@@ -311,126 +286,124 @@ export default function ExpenseDetailPage() {
         </div>
       )}
 
-      {/* ============================================ */}
-      {/* HERO — Kiasi */}
-      {/* ============================================ */}
-      <div className="bg-gradient-to-br from-church-600 via-church-500 to-church-400 rounded-2xl shadow-lg p-6 text-white">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div>
-            <p className="text-xs uppercase tracking-wider opacity-80 font-semibold">
-              Kiasi
-            </p>
-            <p className="text-4xl font-bold mt-2">
-              {formatCurrency(expense.amount)}
-            </p>
-            <p className="text-sm opacity-90 mt-1">{expense.category}</p>
-          </div>
-          <div className="sm:text-right">
-            <p className="text-xs uppercase tracking-wider opacity-80 font-semibold">
-              Tarehe ya Ombi
-            </p>
-            <p className="text-lg font-semibold mt-1">
-              {formatDateTime(expense.created_at)}
-            </p>
+      {/* ===== HERO ===== */}
+      <AnimatedSection delay={0.1}>
+        <div className="bg-gradient-to-br from-church-600 via-church-500 to-church-400 rounded-2xl shadow-lg p-6 text-white">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-wider opacity-80 font-semibold">
+                Kiasi
+              </p>
+              <p className="text-4xl font-bold mt-2">
+                {formatCurrency(expense.amount)}
+              </p>
+              <p className="text-sm opacity-90 mt-1">{expense.category}</p>
+            </div>
+            <div className="sm:text-right">
+              <p className="text-xs uppercase tracking-wider opacity-80 font-semibold">
+                Tarehe ya Ombi
+              </p>
+              <p className="text-lg font-semibold mt-1">
+                {formatDateTime(expense.created_at)}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </AnimatedSection>
 
-      {/* ============================================ */}
-      {/* TAARIFA */}
-      {/* ============================================ */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-5 border-b border-gray-100">
-          <h2 className="font-bold text-lg text-gray-800 flex items-center gap-2">
-            <FaInfoCircle className="text-church-500" /> Taarifa
-          </h2>
-        </div>
-        <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <DetailRow
-            icon={FaMoneyBillWave}
-            label="Kiasi"
-            value={formatCurrency(expense.amount)}
-          />
-          <DetailRow
-            icon={FaInfoCircle}
-            label="Aina"
-            value={expense.category}
-          />
-          {expense.receipt_number && (
+      {/* ===== TAARIFA ===== */}
+      <AnimatedSection>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-5 border-b border-gray-100">
+            <h2 className="font-bold text-lg text-gray-800 flex items-center gap-2">
+              <FaInfoCircle className="text-church-500" /> Taarifa
+            </h2>
+          </div>
+          <AnimatedStagger className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <DetailRow
+              icon={FaMoneyBillWave}
+              label="Kiasi"
+              value={formatCurrency(expense.amount)}
+            />
             <DetailRow
               icon={FaInfoCircle}
-              label="Namba ya Risiti"
-              value={expense.receipt_number}
+              label="Aina"
+              value={expense.category}
             />
-          )}
-          <DetailRow
-            icon={FaInfoCircle}
-            label="Sadaka Inayohusika"
-            value={expense.offering_id}
-          />
+            {expense.receipt_number && (
+              <DetailRow
+                icon={FaInfoCircle}
+                label="Namba ya Risiti"
+                value={expense.receipt_number}
+              />
+            )}
+            <DetailRow
+              icon={FaInfoCircle}
+              label="Sadaka Inayohusika"
+              value={expense.offering_id}
+            />
+          </AnimatedStagger>
+          <div className="px-5 pb-5">
+            <p className="text-xs text-gray-500 uppercase font-semibold mb-2">
+              Maelezo
+            </p>
+            <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-xl leading-relaxed">
+              {expense.description}
+            </p>
+          </div>
         </div>
-        <div className="px-5 pb-5">
-          <p className="text-xs text-gray-500 uppercase font-semibold mb-2">
-            Maelezo
-          </p>
-          <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-xl leading-relaxed">
-            {expense.description}
-          </p>
-        </div>
-      </div>
+      </AnimatedSection>
 
-      {/* ============================================ */}
-      {/* HISTORIA */}
-      {/* ============================================ */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-5 border-b border-gray-100">
-          <h2 className="font-bold text-lg text-gray-800 flex items-center gap-2">
-            <FaHistory className="text-church-500" /> Historia
-          </h2>
-        </div>
-        <div className="p-5 space-y-4">
-          <TimelineItem
-            icon={FaUser}
-            color="text-blue-600 bg-blue-100 border border-blue-200"
-            title="Iliombwa"
-            person={expense.requested_by_name || "—"}
-            date={expense.created_at}
-          />
-          {expense.approved_by_name && (
+      {/* ===== HISTORIA ===== */}
+      <AnimatedSection>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-5 border-b border-gray-100">
+            <h2 className="font-bold text-lg text-gray-800 flex items-center gap-2">
+              <FaHistory className="text-church-500" /> Historia
+            </h2>
+          </div>
+          <div className="p-5 space-y-4">
             <TimelineItem
-              icon={FaCheckCircle}
+              icon={FaUser}
               color="text-blue-600 bg-blue-100 border border-blue-200"
-              title="Ilidhinishwa"
-              person={expense.approved_by_name}
-              date={expense.approved_at}
+              title="Iliombwa"
+              person={expense.requested_by_name || "—"}
+              date={expense.created_at}
             />
-          )}
-          {expense.withdrawn_at && (
-            <TimelineItem
-              icon={FaUniversity}
-              color="text-emerald-600 bg-emerald-100 border border-emerald-200"
-              title="Imetolewa"
-              person={expense.withdrawn_by_name || "—"}
-              date={expense.withdrawn_at}
-              extra={
-                expense.withdrawal_reference
-                  ? `Kumbukumbu: ${expense.withdrawal_reference}`
-                  : undefined
-              }
-            />
-          )}
+            {expense.approved_by_name && (
+              <TimelineItem
+                icon={FaCheckCircle}
+                color="text-blue-600 bg-blue-100 border border-blue-200"
+                title="Ilidhinishwa"
+                person={expense.approved_by_name}
+                date={expense.approved_at}
+              />
+            )}
+            {expense.withdrawn_at && (
+              <TimelineItem
+                icon={FaUniversity}
+                color="text-emerald-600 bg-emerald-100 border border-emerald-200"
+                title="Imetolewa"
+                person={expense.withdrawn_by_name || "—"}
+                date={expense.withdrawn_at}
+                extra={
+                  expense.withdrawal_reference
+                    ? `Kumbukumbu: ${expense.withdrawal_reference}`
+                    : undefined
+                }
+              />
+            )}
+          </div>
+          <div className="px-5 pb-5 pt-2 border-t border-gray-100">
+            <p className="text-xs text-gray-400">
+              Mwisho kubadilishwa:{" "}
+              {formatDateTime(expense.updated_at || expense.created_at)}
+            </p>
+          </div>
         </div>
-        <div className="px-5 pb-5 pt-2 border-t border-gray-100">
-          <p className="text-xs text-gray-400">
-            Mwisho kubadilishwa:{" "}
-            {formatDateTime(expense.updated_at || expense.created_at)}
-          </p>
-        </div>
-      </div>
+      </AnimatedSection>
 
-      {/* ============================================ */}
-      {/* WITHDRAW MODAL */}
-      {/* ============================================ */}
+      {/* ===== WITHDRAW MODAL ===== */}
       {showWithdrawModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">

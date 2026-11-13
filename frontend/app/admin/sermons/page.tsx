@@ -11,6 +11,7 @@ import {
   FaExclamationTriangle, FaBook, FaSearch,
   FaMusic, FaVideo, FaFilePdf, FaImage,
 } from "react-icons/fa";
+import AnimatedSection from "@/components/ui/AnimatedSection";
 
 // ============================================================
 // ✅ ROLES ZINAZORUHUSIWA KUSIMAMIA MAHUBIRI
@@ -183,23 +184,25 @@ export default function AdminSermonsPage() {
   // ============================================================
   return (
     <div className="space-y-6">
-      {/* HEADER */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Mahubiri</h1>
-          <p className="text-gray-500 text-sm mt-1">
-            Simamia mahubiri yote ya kanisa
-          </p>
+      {/* ===== HEADER ===== */}
+      <AnimatedSection>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Mahubiri</h1>
+            <p className="text-gray-500 text-sm mt-1">
+              Simamia mahubiri yote ya kanisa
+            </p>
+          </div>
+          <Link
+            href="/admin/sermons/new"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-church-500 to-church-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all"
+          >
+            <FaPlus /> Ongeza Mahubiri
+          </Link>
         </div>
-        <Link
-          href="/admin/sermons/new"
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-church-500 to-church-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all"
-        >
-          <FaPlus /> Ongeza Mahubiri
-        </Link>
-      </div>
+      </AnimatedSection>
 
-      {/* ERROR */}
+      {/* ===== ERROR ===== */}
       {error && (
         <div className="p-4 bg-red-50 border-l-4 border-red-500 rounded-xl flex items-start gap-3">
           <FaExclamationTriangle className="text-red-500 mt-0.5 flex-shrink-0" />
@@ -213,136 +216,140 @@ export default function AdminSermonsPage() {
         </div>
       )}
 
-      {/* SEARCH */}
-      <div className="bg-white rounded-xl p-4 shadow-sm">
-        <div className="relative">
-          <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Tafuta kwa kichwa au mchungaji..."
-            className="w-full pl-11 pr-4 py-2.5 border border-gray-200 rounded-xl focus:border-church-500 focus:outline-none focus:ring-2 focus:ring-church-500/20"
-          />
+      {/* ===== SEARCH ===== */}
+      <AnimatedSection>
+        <div className="bg-white rounded-xl p-4 shadow-sm">
+          <div className="relative">
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Tafuta kwa kichwa au mchungaji..."
+              className="w-full pl-11 pr-4 py-2.5 border border-gray-200 rounded-xl focus:border-church-500 focus:outline-none focus:ring-2 focus:ring-church-500/20"
+            />
+          </div>
         </div>
-      </div>
+      </AnimatedSection>
 
-      {/* TABLE */}
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-        {loading ? (
-          <div className="text-center py-16">
-            <FaSpinner className="animate-spin text-4xl text-church-500 mx-auto" />
-            <p className="text-gray-500 mt-3">Inapakia mahubiri...</p>
-          </div>
-        ) : filteredSermons.length === 0 ? (
-          <div className="text-center py-16 text-gray-500">
-            <FaBook className="text-6xl text-gray-300 mx-auto mb-4" />
-            <p className="text-lg">Hakuna mahubiri bado</p>
-            <p className="text-sm mt-2">
-              Bonyeza "Ongeza Mahubiri" kuanza
-            </p>
-            <Link
-              href="/admin/sermons/new"
-              className="inline-flex items-center gap-2 mt-4 bg-church-500 text-white px-5 py-2 rounded-xl hover:bg-church-600 transition-colors"
-            >
-              <FaPlus /> Ongeza Mahubiri ya Kwanza
-            </Link>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-100">
-                <tr>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
-                    Kichwa
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
-                    Mchungaji
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
-                    Tarehe
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
-                    Faili
-                  </th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
-                    Hali
-                  </th>
-                  <th className="text-right px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
-                    Vitendo
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filteredSermons.map((sermon) => (
-                  <tr key={sermon.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-church-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0">
-                          🎙️
-                        </div>
-                        <div className="min-w-0">
-                          <p className="font-medium text-gray-800 truncate">
-                            {sermon.title}
-                          </p>
-                          {sermon.scripture && (
-                            <p className="text-xs text-gray-500 truncate">
-                              📖 {sermon.scripture}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {sermon.preacher}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {formatDate(sermon.date)}
-                    </td>
-                    <td className="px-6 py-4">
-                      {fileIndicators(sermon)}
-                    </td>
-                    <td className="px-6 py-4">
-                      {statusBadge(sermon.status)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link
-                          href={`/sermons/${sermon.id}`}
-                          target="_blank"
-                          className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                          title="Tazama"
-                        >
-                          <FaEye />
-                        </Link>
-                        <Link
-                          href={`/admin/sermons/${sermon.id}/edit`}
-                          className="p-2 text-gray-500 hover:text-church-600 hover:bg-church-50 rounded-lg transition-colors"
-                          title="Hariri"
-                        >
-                          <FaEdit />
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(sermon.id, sermon.title)}
-                          disabled={deleting === sermon.id}
-                          className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
-                          title="Futa"
-                        >
-                          {deleting === sermon.id ? (
-                            <FaSpinner className="animate-spin" />
-                          ) : (
-                            <FaTrash />
-                          )}
-                        </button>
-                      </div>
-                    </td>
+      {/* ===== TABLE ===== */}
+      <AnimatedSection>
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          {loading ? (
+            <div className="text-center py-16">
+              <FaSpinner className="animate-spin text-4xl text-church-500 mx-auto" />
+              <p className="text-gray-500 mt-3">Inapakia mahubiri...</p>
+            </div>
+          ) : filteredSermons.length === 0 ? (
+            <div className="text-center py-16 text-gray-500">
+              <FaBook className="text-6xl text-gray-300 mx-auto mb-4" />
+              <p className="text-lg">Hakuna mahubiri bado</p>
+              <p className="text-sm mt-2">
+                Bonyeza "Ongeza Mahubiri" kuanza
+              </p>
+              <Link
+                href="/admin/sermons/new"
+                className="inline-flex items-center gap-2 mt-4 bg-church-500 text-white px-5 py-2 rounded-xl hover:bg-church-600 transition-colors"
+              >
+                <FaPlus /> Ongeza Mahubiri ya Kwanza
+              </Link>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-100">
+                  <tr>
+                    <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                      Kichwa
+                    </th>
+                    <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                      Mchungaji
+                    </th>
+                    <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                      Tarehe
+                    </th>
+                    <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                      Faili
+                    </th>
+                    <th className="text-left px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                      Hali
+                    </th>
+                    <th className="text-right px-6 py-4 text-xs font-semibold text-gray-500 uppercase">
+                      Vitendo
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {filteredSermons.map((sermon) => (
+                    <tr key={sermon.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-church-100 rounded-xl flex items-center justify-center text-lg flex-shrink-0">
+                            🎙️
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-medium text-gray-800 truncate">
+                              {sermon.title}
+                            </p>
+                            {sermon.scripture && (
+                              <p className="text-xs text-gray-500 truncate">
+                                📖 {sermon.scripture}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {sermon.preacher}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {formatDate(sermon.date)}
+                      </td>
+                      <td className="px-6 py-4">
+                        {fileIndicators(sermon)}
+                      </td>
+                      <td className="px-6 py-4">
+                        {statusBadge(sermon.status)}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-end gap-2">
+                          <Link
+                            href={`/sermons/${sermon.id}`}
+                            target="_blank"
+                            className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Tazama"
+                          >
+                            <FaEye />
+                          </Link>
+                          <Link
+                            href={`/admin/sermons/${sermon.id}/edit`}
+                            className="p-2 text-gray-500 hover:text-church-600 hover:bg-church-50 rounded-lg transition-colors"
+                            title="Hariri"
+                          >
+                            <FaEdit />
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(sermon.id, sermon.title)}
+                            disabled={deleting === sermon.id}
+                            className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                            title="Futa"
+                          >
+                            {deleting === sermon.id ? (
+                              <FaSpinner className="animate-spin" />
+                            ) : (
+                              <FaTrash />
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </AnimatedSection>
     </div>
   );
 }

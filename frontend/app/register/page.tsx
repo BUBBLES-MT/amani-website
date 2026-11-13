@@ -11,10 +11,15 @@ import {
   FaEye, FaEyeSlash, FaSpinner, FaExclamationTriangle,
   FaCheckCircle, FaUserShield, FaArrowLeft, FaInfoCircle,
 } from "react-icons/fa";
+import AnimatedSection from "@/components/ui/AnimatedSection";
+import {
+  AnimatedHero,
+  AnimatedHeroItem,
+  AnimatedHeroText,
+} from "@/components/ui/AnimatedHero";
 
 // ============================================
 // ✅ ROLES ZINAZORUHUSIWA KWA PUBLIC REGISTRATION
-// ❌ HAWARUHUSIWI: mchungaji_kiongozi, mchungaji_msaidizi, mwinjilist
 // ============================================
 const PUBLIC_ROLES = [
   { value: "mzee_kanisa", label: "Mzee wa Kanisa" },
@@ -37,7 +42,7 @@ export default function RegisterPage() {
     email: "",
     phone: "",
     password: "",
-    role: "muumini",
+    role: "mzee_kanisa", // ✅ Badilisha kutoka "muumini" (haipo kwenye PUBLIC_ROLES)
     church_name: "",
     church_location: "",
   });
@@ -85,7 +90,7 @@ export default function RegisterPage() {
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
+        <AnimatedSection className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
           <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <FaCheckCircle className="text-emerald-600 text-4xl" />
           </div>
@@ -125,7 +130,7 @@ export default function RegisterPage() {
                   email: "",
                   phone: "",
                   password: "",
-                  role: "muumini",
+                  role: "mzee_kanisa",
                   church_name: "",
                   church_location: "",
                 });
@@ -135,7 +140,7 @@ export default function RegisterPage() {
               Sajili mtumiaji mwingine
             </button>
           </div>
-        </div>
+        </AnimatedSection>
       </div>
     );
   }
@@ -154,22 +159,26 @@ export default function RegisterPage() {
           <FaArrowLeft /> Rudi Nyumbani
         </Link>
 
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+        <AnimatedSection className="bg-white rounded-2xl shadow-xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-church-600 to-church-700 p-6 text-white">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                <FaUserShield className="text-2xl" />
+          <AnimatedHero className="bg-gradient-to-r from-church-600 to-church-700 p-6 text-white">
+            <AnimatedHeroItem>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                  <FaUserShield className="text-2xl" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold">Jisajili</h1>
+                  <p className="text-sm opacity-90">Amani Luthelani Church</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold">Jisajili</h1>
-                <p className="text-sm opacity-90">Amani Luthelani Church</p>
-              </div>
-            </div>
-            <p className="text-sm opacity-90 mt-2">
-              Maombi yako yatadhibitishwa na viongozi wa kanisa kabla ya kuingia.
-            </p>
-          </div>
+            </AnimatedHeroItem>
+            <AnimatedHeroItem>
+              <p className="text-sm opacity-90 mt-2">
+                Maombi yako yatadhibitishwa na viongozi wa kanisa kabla ya kuingia.
+              </p>
+            </AnimatedHeroItem>
+          </AnimatedHero>
 
           {/* Form Body */}
           <form onSubmit={handleSubmit} className="p-6 space-y-5">
@@ -340,14 +349,14 @@ export default function RegisterPage() {
             <p className="text-center text-sm text-gray-500">
               Una akaunti?{" "}
               <Link
-                href="/login"
+                href="/admin/login"
                 className="text-church-600 hover:text-church-800 font-medium"
               >
                 Ingia Hapa
               </Link>
             </p>
           </form>
-        </div>
+        </AnimatedSection>
       </div>
     </div>
   );

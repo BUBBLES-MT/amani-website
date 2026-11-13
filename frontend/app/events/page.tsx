@@ -9,6 +9,14 @@ import {
   FaCalendar, FaClock, FaMapMarkerAlt, FaArrowRight,
   FaFilter, FaSpinner, FaExclamationTriangle, FaGlobe,
 } from "react-icons/fa";
+import AnimatedSection from "@/components/ui/AnimatedSection";
+import AnimatedStagger from "@/components/ui/AnimatedStagger";
+import {
+  AnimatedHero,
+  AnimatedHeroItem,
+  AnimatedHeroText,
+} from "@/components/ui/AnimatedHero";
+import { listItem } from "@/lib/animations";
 
 export default function EventsPage() {
   const [loading, setLoading] = useState(true);
@@ -74,31 +82,39 @@ export default function EventsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
-      {/* HERO */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-church-600 via-church-700 to-church-900 text-white p-8 md:p-16 mb-12 shadow-2xl">
+      {/* ===== HERO ===== */}
+      <AnimatedHero className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-church-600 via-church-700 to-church-900 text-white p-8 md:p-16 mb-12 shadow-2xl">
         <div className="absolute inset-0 bg-black/20 z-0"></div>
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-gold-500/10 rounded-full blur-3xl"></div>
 
         <div className="relative z-10 max-w-3xl">
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4 text-sm font-medium">
-            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-            Matukio
-          </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold leading-tight mb-4">
-            Matukio <span className="text-gold-300">Yajayo</span>
-          </h1>
-          <p className="text-lg md:text-xl opacity-90 max-w-2xl leading-relaxed">
-            Jiunge nasi katika matukio mbalimbali ya ibada, mafunzo, na ushirika.
-          </p>
+          <AnimatedHeroItem>
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4 text-sm font-medium">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              Matukio
+            </div>
+          </AnimatedHeroItem>
+
+          <AnimatedHeroText>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold leading-tight mb-4">
+              Matukio <span className="text-gold-300">Yajayo</span>
+            </h1>
+          </AnimatedHeroText>
+
+          <AnimatedHeroItem>
+            <p className="text-lg md:text-xl opacity-90 max-w-2xl leading-relaxed">
+              Jiunge nasi katika matukio mbalimbali ya ibada, mafunzo, na ushirika.
+            </p>
+          </AnimatedHeroItem>
         </div>
 
         <div className="absolute right-4 md:right-12 top-1/2 -translate-y-1/2 opacity-10 text-[12rem] md:text-[18rem] select-none">
           📅
         </div>
-      </section>
+      </AnimatedHero>
 
-      {/* ERROR */}
+      {/* ===== ERROR ===== */}
       {error && (
         <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-xl flex items-start gap-3">
           <FaExclamationTriangle className="text-red-500 mt-0.5 flex-shrink-0" />
@@ -106,7 +122,7 @@ export default function EventsPage() {
         </div>
       )}
 
-      {/* LOADING */}
+      {/* ===== LOADING ===== */}
       {loading ? (
         <div className="text-center py-16">
           <FaSpinner className="animate-spin text-5xl text-church-500 mx-auto" />
@@ -114,9 +130,9 @@ export default function EventsPage() {
         </div>
       ) : (
         <>
-          {/* FILTERS */}
+          {/* ===== FILTERS ===== */}
           {events.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-8">
+            <AnimatedSection className="flex flex-wrap gap-2 mb-8">
               <FaFilter className="text-gray-400 text-lg mt-2 mr-1" />
               {filters.map((filter) => (
                 <button
@@ -131,10 +147,10 @@ export default function EventsPage() {
                   {filter === "All" ? "Zote" : filter}
                 </button>
               ))}
-            </div>
+            </AnimatedSection>
           )}
 
-          {/* EVENTS LIST */}
+          {/* ===== EVENTS LIST ===== */}
           {filteredEvents.length === 0 ? (
             <div className="text-center py-16 text-gray-500">
               <FaCalendar className="text-6xl text-gray-300 mx-auto mb-4" />
@@ -150,7 +166,7 @@ export default function EventsPage() {
               </p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <AnimatedStagger className="space-y-4">
               {filteredEvents.map((event) => (
                 <div
                   key={event.id}
@@ -225,13 +241,13 @@ export default function EventsPage() {
                   </div>
                 </div>
               ))}
-            </div>
+            </AnimatedStagger>
           )}
         </>
       )}
 
-      {/* CTA */}
-      <section className="mt-12 bg-gradient-to-r from-church-500 to-church-700 rounded-3xl p-8 md:p-12 text-center text-white">
+      {/* ===== CTA ===== */}
+      <AnimatedSection className="mt-12 bg-gradient-to-r from-church-500 to-church-700 rounded-3xl p-8 md:p-12 text-center text-white">
         <h2 className="text-2xl md:text-3xl font-serif font-bold mb-4">
           Je, Una Swali?
         </h2>
@@ -244,7 +260,7 @@ export default function EventsPage() {
         >
           Wasiliana Nasi
         </Link>
-      </section>
+      </AnimatedSection>
     </div>
   );
 }

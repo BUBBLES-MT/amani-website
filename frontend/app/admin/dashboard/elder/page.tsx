@@ -9,6 +9,8 @@ import {
   FaHands, FaPlus, FaSpinner, FaExclamationTriangle,
   FaCheckCircle, FaClock, FaWallet, FaUsers,
 } from "react-icons/fa";
+import AnimatedSection from "@/components/ui/AnimatedSection";
+import AnimatedStagger from "@/components/ui/AnimatedStagger";
 
 export default function ElderDashboard() {
   const [loading, setLoading] = useState(true);
@@ -35,7 +37,6 @@ export default function ElderDashboard() {
         const offeringsData = await offeringsApi.list({ limit: 100 });
         const offerings = Array.isArray(offeringsData) ? offeringsData : [];
 
-        // ✅ Hesabu
         const totalOfferings = offerings.reduce(
           (sum, o) => sum + Number(o.amount || 0), 0
         );
@@ -82,7 +83,9 @@ export default function ElderDashboard() {
     if (!dateStr) return "—";
     try {
       return new Date(dateStr).toLocaleDateString("sw-TZ", {
-        day: "2-digit", month: "2-digit", year: "numeric",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
       });
     } catch {
       return dateStr;
@@ -139,19 +142,17 @@ export default function ElderDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* ============================================ */}
-      {/* HEADER */}
-      {/* ============================================ */}
-      <div>
+      {/* ===== HEADER ===== */}
+      <AnimatedSection>
         <h1 className="text-2xl font-bold text-gray-800">
           Dashboard ya Mzee wa Kanisa
         </h1>
         <p className="text-gray-500 text-sm mt-1">
           Karibu, {user?.name || "Mzee wa Kanisa"}! Rekodi na uangalie sadaka za kanisa.
         </p>
-      </div>
+      </AnimatedSection>
 
-      {/* Error */}
+      {/* ===== ERROR ===== */}
       {error && (
         <div className="p-4 bg-amber-50 border-l-4 border-amber-500 rounded-xl flex items-start gap-3">
           <FaExclamationTriangle className="text-amber-500 mt-0.5 flex-shrink-0" />
@@ -159,177 +160,177 @@ export default function ElderDashboard() {
         </div>
       )}
 
-      {/* ============================================ */}
-      {/* STAT CARDS */}
-      {/* ============================================ */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statCards.map((stat, i) => (
-          <div
-            key={i}
-            className="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition-all duration-300"
+      {/* ===== STAT CARDS ===== */}
+      <AnimatedSection>
+        <AnimatedStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {statCards.map((stat, i) => (
+            <div
+              key={i}
+              className="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition-all duration-300"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-500 font-medium">{stat.label}</p>
+                  <p className="text-xl md:text-2xl font-bold text-gray-800 mt-1">
+                    {stat.value}
+                  </p>
+                </div>
+                <div className={`${stat.bg} p-3 rounded-xl`}>
+                  <stat.icon className={`${stat.color} text-xl`} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </AnimatedStagger>
+      </AnimatedSection>
+
+      {/* ===== QUICK ACTIONS ===== */}
+      <AnimatedSection>
+        <AnimatedStagger className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Link
+            href="/admin/offerings/new"
+            className="bg-gradient-to-br from-church-500 to-church-700 rounded-2xl shadow-lg p-6 text-white hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group"
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                <FaPlus className="text-2xl" />
+              </div>
               <div>
-                <p className="text-sm text-gray-500 font-medium">{stat.label}</p>
-                <p className="text-xl md:text-2xl font-bold text-gray-800 mt-1">
-                  {stat.value}
-                </p>
-              </div>
-              <div className={`${stat.bg} p-3 rounded-xl`}>
-                <stat.icon className={`${stat.color} text-xl`} />
+                <p className="font-bold text-lg">Rekodi Sadaka Mpya</p>
+                <p className="text-sm opacity-90">Ongeza sadaka ya ibada</p>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          </Link>
 
-      {/* ============================================ */}
-      {/* QUICK ACTIONS */}
-      {/* ============================================ */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Link
-          href="/admin/offerings/new"
-          className="bg-gradient-to-br from-church-500 to-church-700 rounded-2xl shadow-lg p-6 text-white hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group"
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <FaPlus className="text-2xl" />
-            </div>
-            <div>
-              <p className="font-bold text-lg">Rekodi Sadaka Mpya</p>
-              <p className="text-sm opacity-90">Ongeza sadaka ya ibada</p>
-            </div>
-          </div>
-        </Link>
-
-        <Link
-          href="/admin/offerings"
-          className="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition-all duration-300 hover:scale-[1.02] group"
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-church-50 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
-              <FaHands className="text-2xl text-church-500" />
-            </div>
-            <div>
-              <p className="font-bold text-lg text-gray-800">Ona Sadaka Zote</p>
-              <p className="text-sm text-gray-500">Tazama historia ya sadaka</p>
-            </div>
-          </div>
-        </Link>
-      </div>
-
-      {/* ============================================ */}
-      {/* RECENT OFFERINGS */}
-      {/* ============================================ */}
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-          <h3 className="font-serif font-bold text-lg text-gray-800">
-            Sadaka za Hivi Karibuni
-          </h3>
           <Link
             href="/admin/offerings"
-            className="text-church-600 text-sm hover:text-church-800 transition-colors"
+            className="bg-white rounded-2xl shadow-sm p-6 hover:shadow-md transition-all duration-300 hover:scale-[1.02] group"
           >
-            Ona Zote
-          </Link>
-        </div>
-        <div className="overflow-x-auto">
-          {recentOfferings.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
-              <FaHands className="text-5xl text-gray-300 mx-auto mb-3" />
-              <p>Hakuna sadaka zilizorekodiwa bado</p>
-              <Link
-                href="/admin/offerings/new"
-                className="inline-flex items-center gap-2 mt-4 bg-church-500 text-white px-5 py-2 rounded-xl hover:bg-church-600 transition-colors"
-              >
-                <FaPlus /> Rekodi Sadaka ya Kwanza
-              </Link>
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-church-50 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                <FaHands className="text-2xl text-church-500" />
+              </div>
+              <div>
+                <p className="font-bold text-lg text-gray-800">Ona Sadaka Zote</p>
+                <p className="text-sm text-gray-500">Tazama historia ya sadaka</p>
+              </div>
             </div>
-          ) : (
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
-                    Tarehe
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
-                    Ibada
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
-                    Aina
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
-                    Kiasi
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
-                    Hali
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
-                    Aliyerekodi
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {recentOfferings.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {formatDate(item.service_date || item.date)}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {item.service_type || item.service || "Ibada"}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {item.offering_type || "Sadaka"}
-                    </td>
-                    <td className="px-6 py-4 text-sm font-semibold text-gray-800">
-                      {formatCurrency(item.amount)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${
-                          item.status === "Imeidhinishwa" || item.status === "Imepelekwa Bank"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-yellow-100 text-yellow-700"
-                        }`}
-                      >
-                        {item.status === "Imeidhinishwa" || item.status === "Imepelekwa Bank" ? (
-                          <FaCheckCircle />
-                        ) : (
-                          <FaClock />
-                        )}
-                        {item.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {item.recorded_by_name || item.recorded_by || "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-      </div>
+          </Link>
+        </AnimatedStagger>
+      </AnimatedSection>
 
-      {/* ============================================ */}
-      {/* INFO CARD */}
-      {/* ============================================ */}
-      <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-            <FaUsers className="text-blue-600" />
+      {/* ===== RECENT OFFERINGS ===== */}
+      <AnimatedSection>
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+            <h3 className="font-serif font-bold text-lg text-gray-800">
+              Sadaka za Hivi Karibuni
+            </h3>
+            <Link
+              href="/admin/offerings"
+              className="text-church-600 text-sm hover:text-church-800 transition-colors"
+            >
+              Ona Zote
+            </Link>
           </div>
-          <div>
-            <p className="text-sm font-semibold text-blue-900">
-              Wajibu Wako kama Mzee wa Kanisa
-            </p>
-            <p className="text-sm text-blue-700 mt-1">
-              Unahusika na kurekodi sadaka za ibada pamoja na wazee wengine.
-              Kila ibada ina wazee wawili au wanne wanaohusika.
-            </p>
+          <div className="overflow-x-auto">
+            {recentOfferings.length === 0 ? (
+              <div className="text-center py-12 text-gray-500">
+                <FaHands className="text-5xl text-gray-300 mx-auto mb-3" />
+                <p>Hakuna sadaka zilizorekodiwa bado</p>
+                <Link
+                  href="/admin/offerings/new"
+                  className="inline-flex items-center gap-2 mt-4 bg-church-500 text-white px-5 py-2 rounded-xl hover:bg-church-600 transition-colors"
+                >
+                  <FaPlus /> Rekodi Sadaka ya Kwanza
+                </Link>
+              </div>
+            ) : (
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
+                      Tarehe
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
+                      Ibada
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
+                      Aina
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
+                      Kiasi
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
+                      Hali
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">
+                      Aliyerekodi
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {recentOfferings.map((item) => (
+                    <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {formatDate(item.service_date || item.date)}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {item.service_type || item.service || "Ibada"}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {item.offering_type || "Sadaka"}
+                      </td>
+                      <td className="px-6 py-4 text-sm font-semibold text-gray-800">
+                        {formatCurrency(item.amount)}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${
+                            item.status === "Imeidhinishwa" || item.status === "Imepelekwa Bank"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-yellow-100 text-yellow-700"
+                          }`}
+                        >
+                          {item.status === "Imeidhinishwa" || item.status === "Imepelekwa Bank" ? (
+                            <FaCheckCircle />
+                          ) : (
+                            <FaClock />
+                          )}
+                          {item.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {item.recorded_by_name || item.recorded_by || "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
-      </div>
+      </AnimatedSection>
+
+      {/* ===== INFO CARD ===== */}
+      <AnimatedSection>
+        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <FaUsers className="text-blue-600" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-blue-900">
+                Wajibu Wako kama Mzee wa Kanisa
+              </p>
+              <p className="text-sm text-blue-700 mt-1">
+                Unahusika na kurekodi sadaka za ibada pamoja na wazee wengine.
+                Kila ibada ina wazee wawili au wanne wanaohusika.
+              </p>
+            </div>
+          </div>
+        </div>
+      </AnimatedSection>
     </div>
   );
 }

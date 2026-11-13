@@ -8,6 +8,7 @@ import {
   FaSpinner, FaExclamationTriangle, FaSave, FaCheckCircle,
   FaChurch, FaPhone, FaGlobe, FaCog, FaPalette,
 } from "react-icons/fa";
+import AnimatedSection from "@/components/ui/AnimatedSection";
 
 type SettingsData = Record<string, string>;
 
@@ -99,9 +100,6 @@ export default function SettingsPage() {
     }
   };
 
-  // ============================================
-  // 🔄 RESET
-  // ============================================
   const handleReset = () => {
     setSettings(initial);
     setError("");
@@ -112,10 +110,8 @@ export default function SettingsPage() {
     setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
-  // ✅ Check kama kuna mabadiliko
   const hasChanges = JSON.stringify(settings) !== JSON.stringify(initial);
 
-  // ✅ Filter settings kwa tab
   const filteredKeys = Object.keys(settings).filter((key) => {
     if (activeTab === "church") return key.startsWith("church_");
     if (activeTab === "contact") return key.startsWith("contact_");
@@ -140,39 +136,45 @@ export default function SettingsPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-10">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Mipangilio</h1>
-          <p className="text-gray-500 text-sm mt-1">
-            Badilisha mipangilio ya kanisa na mfumo
-          </p>
-        </div>
-        <div className="flex gap-2">
-          {hasChanges && (
-            <button
-              onClick={handleReset}
-              disabled={saving}
-              className="px-4 py-2.5 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 text-sm font-medium"
-            >
-              Ghairi
-            </button>
-          )}
-          <button
-            onClick={handleSave}
-            disabled={saving || !hasChanges}
-            className="inline-flex items-center gap-2 bg-church-500 hover:bg-church-600 disabled:bg-gray-300 text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors"
-          >
-            {saving ? (
-              <><FaSpinner className="animate-spin" /> Inahifadhi...</>
-            ) : (
-              <><FaSave /> Hifadhi</>
+      {/* ===== HEADER ===== */}
+      <AnimatedSection>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Mipangilio</h1>
+            <p className="text-gray-500 text-sm mt-1">
+              Badilisha mipangilio ya kanisa na mfumo
+            </p>
+          </div>
+          <div className="flex gap-2">
+            {hasChanges && (
+              <button
+                onClick={handleReset}
+                disabled={saving}
+                className="px-4 py-2.5 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 text-sm font-medium"
+              >
+                Ghairi
+              </button>
             )}
-          </button>
+            <button
+              onClick={handleSave}
+              disabled={saving || !hasChanges}
+              className="inline-flex items-center gap-2 bg-church-500 hover:bg-church-600 disabled:bg-gray-300 text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors"
+            >
+              {saving ? (
+                <>
+                  <FaSpinner className="animate-spin" /> Inahifadhi...
+                </>
+              ) : (
+                <>
+                  <FaSave /> Hifadhi
+                </>
+              )}
+            </button>
+          </div>
         </div>
-      </div>
+      </AnimatedSection>
 
-      {/* Success */}
+      {/* ===== SUCCESS ===== */}
       {success && (
         <div className="p-4 bg-emerald-50 border-l-4 border-emerald-500 rounded-xl flex items-start gap-3">
           <FaCheckCircle className="text-emerald-500 mt-0.5 flex-shrink-0" />
@@ -180,7 +182,7 @@ export default function SettingsPage() {
         </div>
       )}
 
-      {/* Error */}
+      {/* ===== ERROR ===== */}
       {error && (
         <div className="p-4 bg-red-50 border-l-4 border-red-500 rounded-xl flex items-start gap-3">
           <FaExclamationTriangle className="text-red-500 mt-0.5 flex-shrink-0" />
@@ -188,73 +190,78 @@ export default function SettingsPage() {
         </div>
       )}
 
-      {/* Tabs */}
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div className="flex overflow-x-auto border-b border-gray-100">
-          {TABS.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.key;
-            return (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-2 px-5 py-4 text-sm font-medium whitespace-nowrap transition-colors ${
-                  isActive
-                    ? "text-church-600 border-b-2 border-church-500 bg-church-50/50"
-                    : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
-                }`}
-              >
-                <Icon /> {tab.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Form */}
-        <div className="p-6 space-y-5">
-          {filteredKeys.length === 0 ? (
-            <p className="text-center py-8 text-gray-500">
-              Hakuna mipangilio kwenye sehemu hii
-            </p>
-          ) : (
-            filteredKeys.map((key) => {
-              const meta = FIELD_LABELS[key] || { label: key };
+      {/* ===== TABS + FORM ===== */}
+      <AnimatedSection delay={0.1}>
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          {/* Tabs */}
+          <div className="flex overflow-x-auto border-b border-gray-100">
+            {TABS.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.key;
               return (
-                <div key={key}>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {meta.label}
-                  </label>
-                  {key === "announcement" ? (
-                    <textarea
-                      value={settings[key] || ""}
-                      onChange={(e) => handleChange(key, e.target.value)}
-                      rows={3}
-                      placeholder={meta.placeholder}
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm resize-none"
-                    />
-                  ) : (
-                    <input
-                      type={meta.type || "text"}
-                      value={settings[key] || ""}
-                      onChange={(e) => handleChange(key, e.target.value)}
-                      placeholder={meta.placeholder}
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm"
-                    />
-                  )}
-                </div>
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`flex items-center gap-2 px-5 py-4 text-sm font-medium whitespace-nowrap transition-colors ${
+                    isActive
+                      ? "text-church-600 border-b-2 border-church-500 bg-church-50/50"
+                      : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
+                  }`}
+                >
+                  <Icon /> {tab.label}
+                </button>
               );
-            })
-          )}
-        </div>
-      </div>
+            })}
+          </div>
 
-      {/* Info */}
-      <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
-        <p className="text-sm text-amber-800">
-          ⚠️ <strong>Kumbuka:</strong> Mipangilio hii inatumika kwenye ukurasa wa public
-          (header, footer, contact). Baada ya kuhifadhi, ongeza refresh ili uone mabadiliko.
-        </p>
-      </div>
+          {/* Form */}
+          <div className="p-6 space-y-5">
+            {filteredKeys.length === 0 ? (
+              <p className="text-center py-8 text-gray-500">
+                Hakuna mipangilio kwenye sehemu hii
+              </p>
+            ) : (
+              filteredKeys.map((key) => {
+                const meta = FIELD_LABELS[key] || { label: key };
+                return (
+                  <div key={key}>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {meta.label}
+                    </label>
+                    {key === "announcement" ? (
+                      <textarea
+                        value={settings[key] || ""}
+                        onChange={(e) => handleChange(key, e.target.value)}
+                        rows={3}
+                        placeholder={meta.placeholder}
+                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm resize-none"
+                      />
+                    ) : (
+                      <input
+                        type={meta.type || "text"}
+                        value={settings[key] || ""}
+                        onChange={(e) => handleChange(key, e.target.value)}
+                        placeholder={meta.placeholder}
+                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm"
+                      />
+                    )}
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      </AnimatedSection>
+
+      {/* ===== INFO ===== */}
+      <AnimatedSection>
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+          <p className="text-sm text-amber-800">
+            ⚠️ <strong>Kumbuka:</strong> Mipangilio hii inatumika kwenye ukurasa wa public
+            (header, footer, contact). Baada ya kuhifadhi, ongeza refresh ili uone mabadiliko.
+          </p>
+        </div>
+      </AnimatedSection>
     </div>
   );
 }

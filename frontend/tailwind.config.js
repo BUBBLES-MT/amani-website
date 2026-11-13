@@ -5,16 +5,16 @@ module.exports = {
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/**/*.{js,ts,jsx,tsx,mdx}', // For safety
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
 
   // ===== DARK MODE =====
-  darkMode: 'class', // Enable class-based dark mode
+  darkMode: 'class',
 
   // ===== THEME =====
   theme: {
     extend: {
-      // ===== COLORS =====
+      // ===== COLORS — ZAKO (HAZIJABADILIKA) =====
       colors: {
         church: {
           50: '#f0f7ff',
@@ -27,7 +27,7 @@ module.exports = {
           700: '#004aad',
           800: '#003885',
           900: '#00265c',
-          950: '#001a3d', // Added darker shade
+          950: '#001a3d',
         },
         gold: {
           50: '#fdf9f0',
@@ -40,9 +40,8 @@ module.exports = {
           700: '#8c6012',
           800: '#68460c',
           900: '#442c06',
-          950: '#2a1a03', // Added darker shade
+          950: '#2a1a03',
         },
-        // ===== SEMANTIC COLORS =====
         primary: {
           DEFAULT: '#0a7aff',
           light: '#3a9bff',
@@ -75,17 +74,16 @@ module.exports = {
         },
       },
 
-      // ===== FONTS =====
+      // ===== FONTS — ZAKO =====
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
         serif: ['Merriweather', 'Georgia', 'Cambria', 'serif'],
         mono: ['JetBrains Mono', 'Consolas', 'monospace'],
-        heading: ['Merriweather', 'Georgia', 'serif'], // For headings
+        heading: ['Merriweather', 'Georgia', 'serif'],
       },
 
-      // ===== ANIMATIONS =====
+      // ===== ANIMATIONS — ZAKO + MPYA =====
       animation: {
-        // Existing
         'fade-in': 'fadeIn 0.8s ease-out',
         'fade-out': 'fadeOut 0.8s ease-in',
         'slide-up': 'slideUp 0.6s ease-out',
@@ -101,9 +99,12 @@ module.exports = {
         'zoom-out': 'zoomOut 0.4s ease-in',
         'shake': 'shake 0.5s ease-in-out',
         'glow': 'glow 2s ease-in-out infinite',
+        // 🔥 MPYA
+        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+        'float-slow': 'float 6s ease-in-out infinite',
       },
 
-      // ===== KEYFRAMES =====
+      // ===== KEYFRAMES — ZAKO + MPYA =====
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0' },
@@ -154,9 +155,14 @@ module.exports = {
           '0%, 100%': { boxShadow: '0 0 20px rgba(10, 122, 255, 0.3)' },
           '50%': { boxShadow: '0 0 40px rgba(10, 122, 255, 0.6)' },
         },
+        // 🔥 MPYA
+        pulseGlow: {
+          '0%, 100%': { opacity: '0.6' },
+          '50%': { opacity: '1' },
+        },
       },
 
-      // ===== SPACING =====
+      // ===== SPACING — ZAKO =====
       spacing: {
         '18': '4.5rem',
         '22': '5.5rem',
@@ -164,13 +170,13 @@ module.exports = {
         '30': '7.5rem',
       },
 
-      // ===== BORDER RADIUS =====
+      // ===== BORDER RADIUS — ZAKO =====
       borderRadius: {
         '4xl': '2rem',
         '5xl': '2.5rem',
       },
 
-      // ===== BOX SHADOW =====
+      // ===== BOX SHADOW — ZAKO + MPYA =====
       boxShadow: {
         'soft': '0 4px 20px rgba(0, 0, 0, 0.05)',
         'soft-lg': '0 10px 40px rgba(0, 0, 0, 0.08)',
@@ -179,29 +185,38 @@ module.exports = {
         'glow-gold': '0 0 30px rgba(212, 148, 31, 0.3)',
         'inner-light': 'inset 0 2px 4px rgba(255, 255, 255, 0.1)',
         'inner-dark': 'inset 0 2px 4px rgba(0, 0, 0, 0.1)',
+        // 🔥 MPYA
+        'glow': '0 0 40px -10px rgba(10, 122, 255, 0.5)',
+        'card': '0 4px 6px -1px rgba(0,0,0,0.05), 0 10px 20px -5px rgba(0,0,0,0.08)',
+        'card-hover': '0 10px 25px -5px rgba(10, 122, 255, 0.15), 0 15px 30px -10px rgba(10, 122, 255, 0.1)',
       },
 
-      // ===== BACKGROUND IMAGE =====
+      // ===== BACKGROUND IMAGE — ZAKO + MPYA =====
       backgroundImage: {
         'gradient-church': 'linear-gradient(135deg, #0a7aff 0%, #004aad 100%)',
         'gradient-gold': 'linear-gradient(135deg, #d4941f 0%, #b07a18 100%)',
         'gradient-warm': 'linear-gradient(135deg, #fdf9f0 0%, #fbf0d8 100%)',
         'gradient-cool': 'linear-gradient(135deg, #f0f7ff 0%, #e0eefe 100%)',
+        // 🔥 MPYA — hizi ndizo zilikosekana kwenye dashboard
+        'radial-church':
+          'radial-gradient(circle at top right, rgba(10,122,255,0.15), transparent 50%), radial-gradient(circle at bottom left, rgba(212,148,31,0.10), transparent 50%)',
+        'grid-slate':
+          'linear-gradient(to right, rgb(241 245 249) 1px, transparent 1px), linear-gradient(to bottom, rgb(241 245 249) 1px, transparent 1px)',
       },
 
-      // ===== MIN HEIGHT / WIDTH =====
+      // ===== MIN HEIGHT / WIDTH — ZAKO =====
       minHeight: {
         'screen-75': '75vh',
         'screen-50': '50vh',
       },
 
-      // ===== MAX WIDTH =====
+      // ===== MAX WIDTH — ZAKO =====
       maxWidth: {
         '8xl': '88rem',
         '9xl': '96rem',
       },
 
-      // ===== Z-INDEX =====
+      // ===== Z-INDEX — ZAKO =====
       zIndex: {
         '60': '60',
         '70': '70',
@@ -210,7 +225,7 @@ module.exports = {
         '100': '100',
       },
 
-      // ===== TRANSITION =====
+      // ===== TRANSITION — ZAKO =====
       transitionDuration: {
         '2000': '2000ms',
         '3000': '3000ms',
@@ -218,18 +233,19 @@ module.exports = {
     },
   },
 
-  // ===== PLUGINS =====
+  // ===== PLUGINS — ZAKO =====
   plugins: [
     require('@tailwindcss/forms')({
-      strategy: 'class', // Only use class-based styling
+      strategy: 'class',
     }),
     require('@tailwindcss/typography'),
     require('@tailwindcss/aspect-ratio'),
-    require('tailwindcss-animate'), // For more animations
+    require('tailwindcss-animate'),
   ],
 
-  // ===== SAFELIST (For dynamic classes) =====
+  // ===== SAFELIST — ZAKO + MPYA (muhimu sana!) =====
   safelist: [
+    // Static classes zako
     'bg-church-500',
     'bg-church-600',
     'bg-gold-500',
@@ -246,6 +262,24 @@ module.exports = {
     'hover:bg-church-600',
     'hover:bg-gold-500',
     'hover:bg-gold-600',
-    // Add more dynamic classes as needed
+
+    // 🔥 MUHIMU: Safelist patterns za dynamic classes
+    // Dashboard inatumia `bg-gradient-to-br ${stat.gradient}`
+    // — Tailwind haiwezi ku-detect classes zilizo kwenye variables
+    // — Safelist hizi zinahakikisha zinatumwa kwenye CSS
+
+    // Gradients
+    { pattern: /bg-gradient-to-(br|tr|bl|tl|r|l|t|b)/ },
+
+    // Gradient stops (from / via / to)
+    { pattern: /from-(church|gold|emerald|rose|blue|indigo|amber|orange|teal|pink|slate|cyan|purple|violet|fuchsia|red|green|yellow|lime|sky|gray|zinc|neutral|stone)-(50|100|200|300|400|500|600|700|800|900|950)/ },
+    { pattern: /via-(church|gold|emerald|rose|blue|indigo|amber|orange|teal|pink|slate|cyan|purple|violet|fuchsia|red|green|yellow|lime|sky|gray|zinc|neutral|stone)-(50|100|200|300|400|500|600|700|800|900|950)/ },
+    { pattern: /to-(church|gold|emerald|rose|blue|indigo|amber|orange|teal|pink|slate|cyan|purple|violet|fuchsia|red|green|yellow|lime|sky|gray|zinc|neutral|stone)-(50|100|200|300|400|500|600|700|800|900|950)/ },
+
+    // Backgrounds, texts, borders, rings za rangi zote
+    { pattern: /(bg|text|border|ring)-(church|gold|emerald|rose|blue|indigo|amber|orange|teal|pink|slate|cyan|purple|violet|fuchsia|red|green|yellow|lime|sky|gray|zinc|neutral|stone)-(50|100|200|300|400|500|600|700|800|900|950)/ },
+
+    // Hover variants
+    { pattern: /hover:(bg|text|border)-(church|gold|emerald|rose|blue|indigo|amber|orange|teal|pink|slate)-(50|100|200|300|400|500|600|700|800|900)/ },
   ],
 }

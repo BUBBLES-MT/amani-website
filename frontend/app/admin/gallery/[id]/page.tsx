@@ -11,6 +11,8 @@ import {
   FaEye, FaDownload, FaStar, FaCalendar, FaUser,
   FaTag, FaImage, FaCheckCircle,
 } from "react-icons/fa";
+import AnimatedSection from "@/components/ui/AnimatedSection";
+import AnimatedStagger from "@/components/ui/AnimatedStagger";
 
 export default function GalleryDetailPage() {
   const params = useParams();
@@ -20,7 +22,6 @@ export default function GalleryDetailPage() {
   const [error, setError] = useState("");
   const [item, setItem] = useState<any>(null);
 
-  // ✅ Download state
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
 
@@ -59,8 +60,11 @@ export default function GalleryDetailPage() {
     if (!dateStr) return "—";
     try {
       return new Date(dateStr).toLocaleString("sw-TZ", {
-        day: "2-digit", month: "2-digit", year: "numeric",
-        hour: "2-digit", minute: "2-digit",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
       });
     } catch {
       return dateStr;
@@ -79,7 +83,6 @@ export default function GalleryDetailPage() {
     try {
       const token = localStorage.getItem("token");
 
-      // ✅ Pata faili kama blob kutoka backend
       const res = await fetch(
         `http://localhost:8000/api/v1/gallery/${id}/download`,
         {
@@ -91,10 +94,8 @@ export default function GalleryDetailPage() {
         throw new Error(`Download failed: ${res.status}`);
       }
 
-      // ✅ Pata blob
       const blob = await res.blob();
 
-      // ✅ Unda download link
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -106,7 +107,6 @@ export default function GalleryDetailPage() {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      // ✅ Update local downloads counter
       setItem((prev: any) => ({
         ...prev,
         downloads: (prev.downloads || 0) + 1,
@@ -115,7 +115,6 @@ export default function GalleryDetailPage() {
       console.error("Download error:", err);
       setDownloadError(err.message || "Imeshindwa kupakua picha");
 
-      // Fallback: fungua kwenye tab mpya
       try {
         window.open(getFullUrl(item.image_url), "_blank");
       } catch {}
@@ -165,28 +164,33 @@ export default function GalleryDetailPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-10">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <Link href="/admin/gallery" className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
-          <FaArrowLeft className="text-gray-600" />
-        </Link>
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold text-gray-800">Maelezo ya Picha</h1>
-          <p className="text-gray-500 text-sm mt-0.5">Taarifa kamili za picha</p>
+      {/* ===== HEADER ===== */}
+      <AnimatedSection>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/admin/gallery"
+            className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+          >
+            <FaArrowLeft className="text-gray-600" />
+          </Link>
+          <div className="flex-1">
+            <h1 className="text-2xl font-bold text-gray-800">Maelezo ya Picha</h1>
+            <p className="text-gray-500 text-sm mt-0.5">Taarifa kamili za picha</p>
+          </div>
+          {item.is_featured && (
+            <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-800 px-3 py-1.5 rounded-xl text-sm font-semibold">
+              <FaStar /> Featured
+            </span>
+          )}
+          {!item.is_published && (
+            <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-800 px-3 py-1.5 rounded-xl text-sm font-semibold">
+              Rasimu
+            </span>
+          )}
         </div>
-        {item.is_featured && (
-          <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-800 px-3 py-1.5 rounded-xl text-sm font-semibold">
-            <FaStar /> Featured
-          </span>
-        )}
-        {!item.is_published && (
-          <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-800 px-3 py-1.5 rounded-xl text-sm font-semibold">
-            Rasimu
-          </span>
-        )}
-      </div>
+      </AnimatedSection>
 
-      {/* Download Error */}
+      {/* ===== DOWNLOAD ERROR ===== */}
       {downloadError && (
         <div className="p-4 bg-red-50 border-l-4 border-red-500 rounded-xl flex items-start gap-3">
           <FaExclamationTriangle className="text-red-500 mt-0.5 flex-shrink-0" />
@@ -200,71 +204,77 @@ export default function GalleryDetailPage() {
         </div>
       )}
 
-      {/* Image */}
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
-        <img
-          src={getFullUrl(item.image_url)}
-          alt={item.title}
-          className="w-full h-auto max-h-[70vh] object-contain bg-gray-100"
-        />
-      </div>
+      {/* ===== IMAGE ===== */}
+      <AnimatedSection delay={0.1}>
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+          <img
+            src={getFullUrl(item.image_url)}
+            alt={item.title}
+            className="w-full h-auto max-h-[70vh] object-contain bg-gray-100"
+          />
+        </div>
+      </AnimatedSection>
 
-      {/* Info */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-5 border-b border-gray-100">
-          <h2 className="font-bold text-lg text-gray-800">{item.title}</h2>
-          {item.description && (
-            <p className="text-sm text-gray-600 mt-2">{item.description}</p>
-          )}
-        </div>
-        <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <DetailRow icon={FaImage} label="Kategoria" value={item.category || "—"} />
-          <DetailRow icon={FaEye} label="Views" value={String(item.views || 0)} />
-          <DetailRow icon={FaDownload} label="Downloads" value={String(item.downloads || 0)} />
-          <DetailRow icon={FaUser} label="Aliyeongeza" value={item.created_by_name || "—"} />
-          <DetailRow icon={FaCalendar} label="Tarehe" value={formatDateTime(item.created_at)} />
-          {item.tags && (
-            <DetailRow icon={FaTag} label="Tags" value={item.tags} />
-          )}
-        </div>
-        {item.event_id && (
-          <div className="px-5 pb-5">
-            <Link
-              href={`/admin/events/${item.event_id}`}
-              className="inline-flex items-center gap-2 text-church-600 hover:text-church-800 text-sm font-medium"
-            >
-              <FaCheckCircle /> Ona tukio linalohusika
-            </Link>
+      {/* ===== INFO ===== */}
+      <AnimatedSection>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-5 border-b border-gray-100">
+            <h2 className="font-bold text-lg text-gray-800">{item.title}</h2>
+            {item.description && (
+              <p className="text-sm text-gray-600 mt-2">{item.description}</p>
+            )}
           </div>
-        )}
-      </div>
-
-      {/* Actions */}
-      <div className="flex flex-wrap gap-3">
-        <button
-          onClick={handleDownload}
-          disabled={downloading}
-          className="inline-flex items-center gap-2 bg-church-500 hover:bg-church-600 disabled:bg-gray-300 text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors"
-        >
-          {downloading ? (
-            <>
-              <FaSpinner className="animate-spin" /> Inapakua...
-            </>
-          ) : (
-            <>
-              <FaDownload /> Pakua Picha
-            </>
+          <AnimatedStagger className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <DetailRow icon={FaImage} label="Kategoria" value={item.category || "—"} />
+            <DetailRow icon={FaEye} label="Views" value={String(item.views || 0)} />
+            <DetailRow icon={FaDownload} label="Downloads" value={String(item.downloads || 0)} />
+            <DetailRow icon={FaUser} label="Aliyeongeza" value={item.created_by_name || "—"} />
+            <DetailRow icon={FaCalendar} label="Tarehe" value={formatDateTime(item.created_at)} />
+            {item.tags && (
+              <DetailRow icon={FaTag} label="Tags" value={item.tags} />
+            )}
+          </AnimatedStagger>
+          {item.event_id && (
+            <div className="px-5 pb-5">
+              <Link
+                href={`/admin/events/${item.event_id}`}
+                className="inline-flex items-center gap-2 text-church-600 hover:text-church-800 text-sm font-medium"
+              >
+                <FaCheckCircle /> Ona tukio linalohusika
+              </Link>
+            </div>
           )}
-        </button>
-        <a
-          href={getFullUrl(item.image_url)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-medium text-sm transition-colors"
-        >
-          <FaEye /> Fungua
-        </a>
-      </div>
+        </div>
+      </AnimatedSection>
+
+      {/* ===== ACTIONS ===== */}
+      <AnimatedSection>
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={handleDownload}
+            disabled={downloading}
+            className="inline-flex items-center gap-2 bg-church-500 hover:bg-church-600 disabled:bg-gray-300 text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-sm transition-colors"
+          >
+            {downloading ? (
+              <>
+                <FaSpinner className="animate-spin" /> Inapakua...
+              </>
+            ) : (
+              <>
+                <FaDownload /> Pakua Picha
+              </>
+            )}
+          </button>
+          <a
+            href={getFullUrl(item.image_url)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-medium text-sm transition-colors"
+          >
+            <FaEye /> Fungua
+          </a>
+        </div>
+      </AnimatedSection>
     </div>
   );
 }

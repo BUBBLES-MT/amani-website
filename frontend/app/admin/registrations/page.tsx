@@ -23,6 +23,8 @@ import {
   FaInfoCircle,
   FaRedo,
 } from "react-icons/fa";
+import AnimatedSection from "@/components/ui/AnimatedSection";
+import AnimatedStagger from "@/components/ui/AnimatedStagger";
 
 // ============================================================
 // 🎨 ROLE LABELS
@@ -43,9 +45,6 @@ const ROLE_LABELS: Record<string, string> = {
 
 const getRoleLabel = (role: string) => ROLE_LABELS[role] || role;
 
-// ============================================================
-// 🎨 ROLE COLORS
-// ============================================================
 const ROLE_COLORS: Record<string, string> = {
   mchungaji_kiongozi: "bg-purple-100 text-purple-700",
   mchungaji_msaidizi: "bg-indigo-100 text-indigo-700",
@@ -91,14 +90,13 @@ export default function RegistrationsPage() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
 
-  // ✅ Action states
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [rejectingUser, setRejectingUser] = useState<User | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
   // ============================================================
-  // 📥 FETCH PENDING REGISTRATIONS
+  // 📥 FETCH
   // ============================================================
   const fetchRegistrations = async () => {
     setLoading(true);
@@ -148,7 +146,7 @@ export default function RegistrationsPage() {
   };
 
   // ============================================================
-  // ❌ REJECT (FUNGUA MODAL)
+  // ❌ REJECT
   // ============================================================
   const openRejectModal = (user: User) => {
     setRejectingUser(user);
@@ -160,9 +158,6 @@ export default function RegistrationsPage() {
     setRejectionReason("");
   };
 
-  // ============================================================
-  // ❌ REJECT (THIBITISHA)
-  // ============================================================
   const handleReject = async () => {
     if (!rejectingUser) return;
 
@@ -190,14 +185,12 @@ export default function RegistrationsPage() {
   };
 
   // ============================================================
-  // 🔍 FILTER + SEARCH
+  // 🔍 FILTER
   // ============================================================
   const filteredUsers = useMemo(() => {
     return users.filter((u) => {
-      // Role filter
       if (roleFilter !== "all" && u.role !== roleFilter) return false;
 
-      // Search
       if (search.trim()) {
         const q = search.toLowerCase();
         return (
@@ -220,7 +213,6 @@ export default function RegistrationsPage() {
       byRole[u.role] = (byRole[u.role] || 0) + 1;
     });
 
-    // Top 3 roles
     const topRoles = Object.entries(byRole)
       .sort(([, a], [, b]) => b - a)
       .slice(0, 3);
@@ -238,30 +230,32 @@ export default function RegistrationsPage() {
   return (
     <div className="space-y-6">
       {/* ===== HEADER ===== */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-2">
-            <FaUserPlus className="text-church-500" />
-            Maombi ya Usajili
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Idhinisha au kataa maombi ya watumiaji wapya
-          </p>
-        </div>
+      <AnimatedSection>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-2">
+              <FaUserPlus className="text-church-500" />
+              Maombi ya Usajili
+            </h1>
+            <p className="text-sm text-gray-500 mt-1">
+              Idhinisha au kataa maombi ya watumiaji wapya
+            </p>
+          </div>
 
-        <button
-          onClick={fetchRegistrations}
-          disabled={loading}
-          className="inline-flex items-center gap-2 bg-church-500 hover:bg-church-600 disabled:bg-gray-300 text-white px-4 py-2.5 rounded-xl font-medium text-sm transition-colors"
-        >
-          {loading ? (
-            <FaSpinner className="animate-spin" />
-          ) : (
-            <FaRedo />
-          )}
-          Refresh
-        </button>
-      </div>
+          <button
+            onClick={fetchRegistrations}
+            disabled={loading}
+            className="inline-flex items-center gap-2 bg-church-500 hover:bg-church-600 disabled:bg-gray-300 text-white px-4 py-2.5 rounded-xl font-medium text-sm transition-colors"
+          >
+            {loading ? (
+              <FaSpinner className="animate-spin" />
+            ) : (
+              <FaRedo />
+            )}
+            Refresh
+          </button>
+        </div>
+      </AnimatedSection>
 
       {/* ===== SUCCESS ===== */}
       {successMsg && (
@@ -288,65 +282,69 @@ export default function RegistrationsPage() {
       )}
 
       {/* ===== STATS CARDS ===== */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="card p-5">
-          <div className="flex items-center justify-between mb-2">
-            <FaUsers className="text-2xl text-church-500" />
-          </div>
-          <h3 className="text-3xl font-bold text-gray-800">{stats.total}</h3>
-          <p className="text-sm text-gray-500">Maombi Yote</p>
-        </div>
-
-        {stats.topRoles.map(([role, count]) => (
-          <div key={role} className="card p-5">
+      <AnimatedSection>
+        <AnimatedStagger className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="card p-5">
             <div className="flex items-center justify-between mb-2">
-              <FaUserShield className="text-2xl text-gold-500" />
+              <FaUsers className="text-2xl text-church-500" />
             </div>
-            <h3 className="text-3xl font-bold text-gray-800">{count}</h3>
-            <p className="text-sm text-gray-500 truncate">
-              {getRoleLabel(role)}
-            </p>
+            <h3 className="text-3xl font-bold text-gray-800">{stats.total}</h3>
+            <p className="text-sm text-gray-500">Maombi Yote</p>
           </div>
-        ))}
 
-        {stats.topRoles.length < 3 &&
-          Array.from({ length: 3 - stats.topRoles.length }).map((_, i) => (
-            <div key={`empty-${i}`} className="card p-5 opacity-50">
+          {stats.topRoles.map(([role, count]) => (
+            <div key={role} className="card p-5">
               <div className="flex items-center justify-between mb-2">
-                <FaUserShield className="text-2xl text-gray-300" />
+                <FaUserShield className="text-2xl text-gold-500" />
               </div>
-              <h3 className="text-3xl font-bold text-gray-300">0</h3>
-              <p className="text-sm text-gray-400">—</p>
+              <h3 className="text-3xl font-bold text-gray-800">{count}</h3>
+              <p className="text-sm text-gray-500 truncate">
+                {getRoleLabel(role)}
+              </p>
             </div>
           ))}
-      </div>
+
+          {stats.topRoles.length < 3 &&
+            Array.from({ length: 3 - stats.topRoles.length }).map((_, i) => (
+              <div key={`empty-${i}`} className="card p-5 opacity-50">
+                <div className="flex items-center justify-between mb-2">
+                  <FaUserShield className="text-2xl text-gray-300" />
+                </div>
+                <h3 className="text-3xl font-bold text-gray-300">0</h3>
+                <p className="text-sm text-gray-400">—</p>
+              </div>
+            ))}
+        </AnimatedStagger>
+      </AnimatedSection>
 
       {/* ===== SEARCH + FILTER ===== */}
-      <div className="card p-4 flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Tafuta kwa jina, email, au simu..."
-            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm"
-          />
-        </div>
+      <AnimatedSection>
+        <div className="card p-4 flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Tafuta kwa jina, email, au simu..."
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm"
+            />
+          </div>
 
-        <select
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value)}
-          className="px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm bg-white"
-        >
-          <option value="all">Roles zote</option>
-          {Object.entries(ROLE_LABELS).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
-      </div>
+          <select
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+            className="px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm bg-white"
+          >
+            <option value="all">Roles zote</option>
+            {Object.entries(ROLE_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </AnimatedSection>
 
       {/* ===== LIST ===== */}
       {loading ? (
@@ -369,14 +367,13 @@ export default function RegistrationsPage() {
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <AnimatedStagger className="space-y-3">
           {filteredUsers.map((user) => (
             <div
               key={user.id}
               className="card p-5 hover:shadow-md transition-shadow"
             >
               <div className="flex flex-col md:flex-row md:items-center gap-4">
-                {/* Avatar + Info */}
                 <div className="flex items-start gap-4 flex-1 min-w-0">
                   <div className="w-12 h-12 bg-gradient-to-br from-church-400 to-church-600 rounded-full flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
                     {user.name.charAt(0).toUpperCase()}
@@ -423,7 +420,6 @@ export default function RegistrationsPage() {
                   </div>
                 </div>
 
-                {/* Actions */}
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <Link
                     href={`/admin/registrations/${user.id}`}
@@ -456,7 +452,7 @@ export default function RegistrationsPage() {
               </div>
             </div>
           ))}
-        </div>
+        </AnimatedStagger>
       )}
 
       {/* ===== REJECT MODAL ===== */}

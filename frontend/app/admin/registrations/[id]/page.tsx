@@ -23,6 +23,8 @@ import {
   FaCalendar,
   FaShieldAlt,
 } from "react-icons/fa";
+import AnimatedSection from "@/components/ui/AnimatedSection";
+import AnimatedStagger from "@/components/ui/AnimatedStagger";
 
 // ============================================================
 // 🎨 ROLE LABELS
@@ -142,7 +144,6 @@ export default function RegistrationDetailPage() {
       await registrationsApi.approve(user.id);
       setSuccessMsg(`✅ "${user.name}" ameidhinishwa kikamilifu!`);
 
-      // ✅ Baada ya sekunde 2, rudisha kwenye orodha
       setTimeout(() => {
         router.push("/admin/registrations");
       }, 1800);
@@ -173,7 +174,6 @@ export default function RegistrationDetailPage() {
       );
       setShowRejectModal(false);
 
-      // ✅ Baada ya sekunde 2, rudisha kwenye orodha
       setTimeout(() => {
         router.push("/admin/registrations");
       }, 1800);
@@ -211,9 +211,7 @@ export default function RegistrationDetailPage() {
 
         <div className="card p-12 text-center">
           <FaExclamationTriangle className="text-5xl text-red-400 mx-auto mb-3" />
-          <h2 className="text-xl font-bold text-gray-800 mb-2">
-            Haipatikani
-          </h2>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Haipatikani</h2>
           <p className="text-gray-500 mb-4">
             {error || "Usajili huu haupo au umeshafutwa."}
           </p>
@@ -228,23 +226,19 @@ export default function RegistrationDetailPage() {
     );
   }
 
-  // ============================================================
-  // ✅ CHECK STATUS
-  // ============================================================
   const isApproved = !!user.is_approved;
 
-  // ============================================================
-  // 🎨 RENDER — DETAILS
-  // ============================================================
   return (
     <div className="space-y-6 max-w-4xl">
       {/* ===== BACK LINK ===== */}
-      <Link
-        href="/admin/registrations"
-        className="inline-flex items-center gap-2 text-gray-600 hover:text-church-600 text-sm font-medium transition-colors"
-      >
-        <FaArrowLeft /> Rudi kwenye Maombi
-      </Link>
+      <AnimatedSection>
+        <Link
+          href="/admin/registrations"
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-church-600 text-sm font-medium transition-colors"
+        >
+          <FaArrowLeft /> Rudi kwenye Maombi
+        </Link>
+      </AnimatedSection>
 
       {/* ===== SUCCESS ===== */}
       {successMsg && (
@@ -263,177 +257,176 @@ export default function RegistrationDetailPage() {
       )}
 
       {/* ===== HEADER CARD ===== */}
-      <div className="card p-6 md:p-8">
-        <div className="flex flex-col sm:flex-row sm:items-start gap-5">
-          {/* Avatar */}
-          <div className="w-20 h-20 bg-gradient-to-br from-church-400 to-church-600 rounded-2xl flex items-center justify-center text-white font-bold text-3xl flex-shrink-0 shadow-lg">
-            {user.name.charAt(0).toUpperCase()}
-          </div>
-
-          {/* Info */}
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-2 mb-2">
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
-                {user.name}
-              </h1>
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-semibold ${getRoleColor(
-                  user.role
-                )}`}
-              >
-                {getRoleLabel(user.role)}
-              </span>
+      <AnimatedSection delay={0.1}>
+        <div className="card p-6 md:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-start gap-5">
+            {/* Avatar */}
+            <div className="w-20 h-20 bg-gradient-to-br from-church-400 to-church-600 rounded-2xl flex items-center justify-center text-white font-bold text-3xl flex-shrink-0 shadow-lg">
+              {user.name.charAt(0).toUpperCase()}
             </div>
 
-            <p className="text-sm text-gray-500 flex items-center gap-2">
-              <FaClock className="text-xs" />
-              Ameomba: {formatDate(user.created_at)}
-            </p>
+            {/* Info */}
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+                  {user.name}
+                </h1>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-semibold ${getRoleColor(
+                    user.role
+                  )}`}
+                >
+                  {getRoleLabel(user.role)}
+                </span>
+              </div>
 
-            {/* Status badge */}
-            <div className="mt-3">
-              {isApproved ? (
-                <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-semibold">
-                  <FaCheck /> Ameidhinishwa
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-700 px-3 py-1.5 rounded-full text-xs font-semibold">
-                  <FaClock /> Inasubiri Idhini
-                </span>
-              )}
+              <p className="text-sm text-gray-500 flex items-center gap-2">
+                <FaClock className="text-xs" />
+                Ameomba: {formatDate(user.created_at)}
+              </p>
+
+              <div className="mt-3">
+                {isApproved ? (
+                  <span className="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                    <FaCheck /> Ameidhinishwa
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                    <FaClock /> Inasubiri Idhini
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </AnimatedSection>
 
       {/* ===== DETAILS ===== */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Email */}
-        <div className="card p-5">
-          <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
-            <FaEnvelope /> Barua Pepe
+      <AnimatedSection>
+        <AnimatedStagger className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="card p-5">
+            <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+              <FaEnvelope /> Barua Pepe
+            </div>
+            <p className="text-gray-800 font-medium break-all">{user.email}</p>
           </div>
-          <p className="text-gray-800 font-medium break-all">
-            {user.email}
-          </p>
-        </div>
 
-        {/* Phone */}
-        <div className="card p-5">
-          <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
-            <FaPhone /> Namba ya Simu
+          <div className="card p-5">
+            <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+              <FaPhone /> Namba ya Simu
+            </div>
+            <p className="text-gray-800 font-medium">
+              {user.phone || <span className="text-gray-400">—</span>}
+            </p>
           </div>
-          <p className="text-gray-800 font-medium">
-            {user.phone || <span className="text-gray-400">—</span>}
-          </p>
-        </div>
 
-        {/* Church */}
-        <div className="card p-5">
-          <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
-            <FaChurch /> Jina la Kanisa
+          <div className="card p-5">
+            <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+              <FaChurch /> Jina la Kanisa
+            </div>
+            <p className="text-gray-800 font-medium">
+              {user.church_name || <span className="text-gray-400">—</span>}
+            </p>
           </div>
-          <p className="text-gray-800 font-medium">
-            {user.church_name || <span className="text-gray-400">—</span>}
-          </p>
-        </div>
 
-        {/* Location */}
-        <div className="card p-5">
-          <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
-            <FaMapMarkerAlt /> Mahali
+          <div className="card p-5">
+            <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+              <FaMapMarkerAlt /> Mahali
+            </div>
+            <p className="text-gray-800 font-medium">
+              {user.church_location || <span className="text-gray-400">—</span>}
+            </p>
           </div>
-          <p className="text-gray-800 font-medium">
-            {user.church_location || (
-              <span className="text-gray-400">—</span>
-            )}
-          </p>
-        </div>
 
-        {/* Role */}
-        <div className="card p-5">
-          <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
-            <FaUserShield /> Role
+          <div className="card p-5">
+            <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+              <FaUserShield /> Role
+            </div>
+            <p className="text-gray-800 font-medium">
+              {getRoleLabel(user.role)}
+            </p>
           </div>
-          <p className="text-gray-800 font-medium">
-            {getRoleLabel(user.role)}
-          </p>
-        </div>
 
-        {/* User ID */}
-        <div className="card p-5">
-          <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
-            <FaShieldAlt /> ID ya Mtumiaji
+          <div className="card p-5">
+            <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
+              <FaShieldAlt /> ID ya Mtumiaji
+            </div>
+            <p className="text-gray-800 font-mono text-xs break-all">
+              {user.id}
+            </p>
           </div>
-          <p className="text-gray-800 font-mono text-xs break-all">
-            {user.id}
-          </p>
-        </div>
-      </div>
+        </AnimatedStagger>
+      </AnimatedSection>
 
-      {/* ===== APPROVED INFO (kama ameidhinishwa) ===== */}
+      {/* ===== APPROVED INFO ===== */}
       {isApproved && (
-        <div className="card p-5 bg-emerald-50 border border-emerald-200">
-          <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-3">
-            <FaCheck /> Taarifa za Idhini
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-emerald-600 text-xs mb-1">Iliidhinishwa na</p>
-              <p className="text-gray-800 font-medium">
-                {user.approved_by_name || "—"}
-              </p>
+        <AnimatedSection>
+          <div className="card p-5 bg-emerald-50 border border-emerald-200">
+            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-3">
+              <FaCheck /> Taarifa za Idhini
             </div>
-            <div>
-              <p className="text-emerald-600 text-xs mb-1 flex items-center gap-1">
-                <FaCalendar /> Tarehe
-              </p>
-              <p className="text-gray-800 font-medium">
-                {formatDate(user.approved_at)}
-              </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-emerald-600 text-xs mb-1">
+                  Iliidhinishwa na
+                </p>
+                <p className="text-gray-800 font-medium">
+                  {user.approved_by_name || "—"}
+                </p>
+              </div>
+              <div>
+                <p className="text-emerald-600 text-xs mb-1 flex items-center gap-1">
+                  <FaCalendar /> Tarehe
+                </p>
+                <p className="text-gray-800 font-medium">
+                  {formatDate(user.approved_at)}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        </AnimatedSection>
       )}
 
       {/* ===== ACTIONS ===== */}
       {!isApproved && !successMsg && (
-        <div className="card p-5">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-            <FaInfoCircle className="text-church-500" />
-            Hatua Zinazofuata
-          </h3>
-          <p className="text-sm text-gray-500 mb-4">
-            Chagua kuidhinisha usajili huu au kukataa. Ukikataa, mtumiaji
-            atafutwa moja kwa moja kwenye database.
-          </p>
+        <AnimatedSection>
+          <div className="card p-5">
+            <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+              <FaInfoCircle className="text-church-500" />
+              Hatua Zinazofuata
+            </h3>
+            <p className="text-sm text-gray-500 mb-4">
+              Chagua kuidhinisha usajili huu au kukataa. Ukikataa, mtumiaji
+              atafutwa moja kwa moja kwenye database.
+            </p>
 
-          <div className="flex flex-col sm:flex-row gap-3">
-            <button
-              onClick={handleApprove}
-              disabled={actionLoading !== null}
-              className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-300 text-white px-6 py-3 rounded-xl font-medium text-sm transition-colors shadow-sm"
-            >
-              {actionLoading === "approve" ? (
-                <>
-                  <FaSpinner className="animate-spin" /> Inaidhinisha...
-                </>
-              ) : (
-                <>
-                  <FaCheck /> Idhinisha Usajili
-                </>
-              )}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={handleApprove}
+                disabled={actionLoading !== null}
+                className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-gray-300 text-white px-6 py-3 rounded-xl font-medium text-sm transition-colors shadow-sm"
+              >
+                {actionLoading === "approve" ? (
+                  <>
+                    <FaSpinner className="animate-spin" /> Inaidhinisha...
+                  </>
+                ) : (
+                  <>
+                    <FaCheck /> Idhinisha Usajili
+                  </>
+                )}
+              </button>
 
-            <button
-              onClick={() => setShowRejectModal(true)}
-              disabled={actionLoading !== null}
-              className="flex-1 inline-flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 disabled:bg-gray-300 text-white px-6 py-3 rounded-xl font-medium text-sm transition-colors shadow-sm"
-            >
-              <FaTimes /> Kataa & Futa
-            </button>
+              <button
+                onClick={() => setShowRejectModal(true)}
+                disabled={actionLoading !== null}
+                className="flex-1 inline-flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 disabled:bg-gray-300 text-white px-6 py-3 rounded-xl font-medium text-sm transition-colors shadow-sm"
+              >
+                <FaTimes /> Kataa & Futa
+              </button>
+            </div>
           </div>
-        </div>
+        </AnimatedSection>
       )}
 
       {/* ===== REJECT MODAL ===== */}

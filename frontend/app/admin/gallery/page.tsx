@@ -9,6 +9,8 @@ import {
   FaPlus, FaSpinner, FaExclamationTriangle, FaImage,
   FaSearch, FaEye, FaTrash, FaStar,
 } from "react-icons/fa";
+import AnimatedSection from "@/components/ui/AnimatedSection";
+import AnimatedStagger from "@/components/ui/AnimatedStagger";
 
 export default function GalleryPage() {
   const [loading, setLoading] = useState(true);
@@ -64,23 +66,29 @@ export default function GalleryPage() {
     return matchesSearch && matchesCategory;
   });
 
-  const uniqueCategories = Array.from(new Set(items.map((i) => i.category).filter(Boolean)));
+  const uniqueCategories = Array.from(
+    new Set(items.map((i) => i.category).filter(Boolean))
+  );
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Gallery</h1>
-          <p className="text-gray-500 text-sm mt-1">Picha zote za kanisa</p>
+      {/* ===== HEADER ===== */}
+      <AnimatedSection>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Gallery</h1>
+            <p className="text-gray-500 text-sm mt-1">Picha zote za kanisa</p>
+          </div>
+          <Link
+            href="/admin/gallery/new"
+            className="inline-flex items-center gap-2 bg-church-500 hover:bg-church-600 text-white px-5 py-2.5 rounded-xl transition-colors font-medium text-sm shadow-sm"
+          >
+            <FaPlus /> Pakia Picha
+          </Link>
         </div>
-        <Link
-          href="/admin/gallery/new"
-          className="inline-flex items-center gap-2 bg-church-500 hover:bg-church-600 text-white px-5 py-2.5 rounded-xl transition-colors font-medium text-sm shadow-sm"
-        >
-          <FaPlus /> Pakia Picha
-        </Link>
-      </div>
+      </AnimatedSection>
 
+      {/* ===== ERROR ===== */}
       {error && (
         <div className="p-4 bg-red-50 border-l-4 border-red-500 rounded-xl flex items-start gap-3">
           <FaExclamationTriangle className="text-red-500 mt-0.5 flex-shrink-0" />
@@ -88,34 +96,40 @@ export default function GalleryPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl shadow-sm p-4 space-y-3">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Tafuta kwa kichwa au tags..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm"
-            />
+      {/* ===== SEARCH & FILTER ===== */}
+      <AnimatedSection>
+        <div className="bg-white rounded-2xl shadow-sm p-4 space-y-3">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Tafuta kwa kichwa au tags..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-11 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm"
+              />
+            </div>
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm bg-white min-w-[160px]"
+            >
+              <option value="">Kategoria zote</option>
+              {uniqueCategories.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
           </div>
-          <select
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-            className="px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-church-400 text-sm bg-white min-w-[160px]"
-          >
-            <option value="">Kategoria zote</option>
-            {uniqueCategories.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
+          <p className="text-xs text-gray-400">
+            {filtered.length} kati ya {items.length} picha
+          </p>
         </div>
-        <p className="text-xs text-gray-400">
-          {filtered.length} kati ya {items.length} picha
-        </p>
-      </div>
+      </AnimatedSection>
 
+      {/* ===== GALLERY GRID ===== */}
       {loading ? (
         <div className="bg-white rounded-2xl shadow-sm p-16 text-center">
           <FaSpinner className="animate-spin text-4xl text-church-500 mx-auto" />
@@ -137,7 +151,7 @@ export default function GalleryPage() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        <AnimatedStagger className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {filtered.map((item) => (
             <div
               key={item.id}
@@ -174,17 +188,23 @@ export default function GalleryPage() {
                     className="p-2 bg-white text-red-600 rounded-lg hover:bg-red-50 disabled:opacity-50"
                     title="Futa"
                   >
-                    {deleting === item.id ? <FaSpinner className="animate-spin" /> : <FaTrash />}
+                    {deleting === item.id ? (
+                      <FaSpinner className="animate-spin" />
+                    ) : (
+                      <FaTrash />
+                    )}
                   </button>
                 </div>
               </div>
               <div className="p-3">
-                <p className="text-sm font-medium text-gray-800 truncate">{item.title}</p>
+                <p className="text-sm font-medium text-gray-800 truncate">
+                  {item.title}
+                </p>
                 <p className="text-xs text-gray-500 truncate">{item.category}</p>
               </div>
             </div>
           ))}
-        </div>
+        </AnimatedStagger>
       )}
     </div>
   );
